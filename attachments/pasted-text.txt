@@ -1,0 +1,3773 @@
+You are an elite Creative Developer, Full-Stack Engineer, UX Engineer, Motion Engineer, Firebase 
+Architect, CMS Developer, Authentication Engineer, Accessibility Specialist and Web 
+Performance Engineer working in Google AI Studio Build mode.
+Your job is to build a REAL DEPLOYABLE BUSINESS WEBSITE.
+This is NOT a static demonstration.
+The website must contain:
+1. the premium public website
+2. persistent content storage
+3. secure administrator authentication
+4. an admin dashboard
+5. editable website content
+6. persistent media management
+7. production-safe fallbacks
+==================================================
+INPUT
+APPROVED WEBSITE BLUEPRINT:
+<<<  Worked for 2m 3s
+
+COUR — PRODUCTION BLUEPRINT
+
+Reference-led recreation of the supplied interactive clothing experience
+
+I inspected the supplied mobile recording frame-by-frame and cross-checked the visible reference against the currently published reference listing. The reference is “Artefakt” on Templify, described as a near-black outerwear experience with a cursor-reactive lattice, an iridescent jacket moving between screen states, trailing sleeve motion, and technical labels resolving from static; the published listing identifies the template as landing page / Three.js / Next.js. 
+
+One important distinction: the recording exposes the public visual and interaction layer, not the original private database, API implementation, authentication system, server logic, or source code. The reference page itself indicates the source is gated, so those internals cannot honestly be claimed as known. 
+
+Therefore this blueprint defines a pixel-accurate recreation of the observable experience, while rebuilding the hidden production stack as a clean, maintainable equivalent.
+
+
+---
+
+1. PROJECT UNDERSTANDING
+
+Brand
+
+COUR
+
+Product
+
+A clothing / outerwear brand whose website should reproduce the visual language and interactive behavior of the supplied reference.
+
+The supplied video shows a highly art-directed technical-fashion / outerwear presentation, not a conventional ecommerce storefront.
+
+The target is therefore:
+
+> COUR should feel like a technical object being inspected, not a clothing catalogue being browsed.
+
+
+
+The shopping system exists underneath that experience.
+
+
+---
+
+Reference characteristics observed
+
+Area	Reference behavior	COUR implementation
+
+Overall tone	Near-black technical environment	Same
+Primary object	Large iridescent outerwear piece	COUR primary garment
+Background	Fine technical/grid field	Same system
+Lighting	Blue/violet reflective highlights	Same visual family
+Typography	Small technical metadata + large restrained headings	Same hierarchy
+Main motion	Garment travels through screen states	Same
+3D	WebGL / Three.js-style presentation	Three.js
+Cursor	Grid reacts to pointer	Cursor-reactive lattice
+Product motion	Garment orientation follows interaction	Pointer/touch-driven orientation
+Secondary motion	Sleeves/parts lag behind	Delayed secondary motion
+Labels	Technical data resolves in/out	Same
+Collections	Multiple garment colorways/products	COUR collections
+Architecture	One immersive scrolling experience	Same
+Mobile	Narrow composition with dense technical content	Dedicated mobile choreography
+
+
+The browser address bar, Android status bar and browser controls visible in the recording are capture chrome, not part of the target website and will not be recreated as website UI.
+
+
+---
+
+Fidelity target
+
+There are three different fidelity layers:
+
+L1 — Pixel fidelity
+
+Exact recreation of:
+
+spacing
+
+proportions
+
+typography scale
+
+grid density
+
+line weights
+
+object placement
+
+component geometry
+
+colors
+
+borders
+
+shadows
+
+visual hierarchy
+
+animation timing
+
+transition timing
+
+scroll states
+
+
+L2 — Behavioral fidelity
+
+Equivalent reproduction of:
+
+pointer response
+
+scroll choreography
+
+garment rotation
+
+lagging secondary motion
+
+technical-label decoding
+
+grid activation
+
+collection interaction
+
+loading states
+
+route transitions
+
+responsive behavior
+
+
+L3 — System fidelity
+
+A real production system rather than a static clone:
+
+Frontend → API/server → database → authentication → authorization → media storage → commerce logic → admin → analytics → testing → deployment → monitoring.
+
+
+---
+
+Critical fidelity limitation
+
+The current supplied reference is a 1080 × 2400 portrait mobile recording lasting approximately 47.5 seconds.
+
+That gives us strong evidence for the mobile visual composition and interaction states, but it does not expose:
+
+original desktop geometry
+
+exact source CSS
+
+exact Three.js implementation
+
+original GLB/GLTF model
+
+original shaders
+
+original texture maps
+
+original database
+
+original API
+
+original authentication provider
+
+original server architecture
+
+
+So the blueprint can specify the recreation architecture precisely, but claiming those hidden systems are identical to the original would be fabrication.
+
+
+---
+
+2. WEBSITE TYPE + CONVERSION GOAL
+
+Category
+
+Immersive technical-fashion ecommerce / product showcase
+
+More specifically:
+
+> 3D editorial clothing storefront disguised as an interactive product laboratory.
+
+
+
+It should not feel like a generic ecommerce site.
+
+
+---
+
+Visitor intent
+
+The visitor should naturally progress through:
+
+See → inspect → understand → compare → choose → purchase
+
+The website does not need a conventional marketing CTA.
+
+The actual conversion actions are:
+
+open product
+
+choose variant
+
+add to bag
+
+view bag
+
+checkout
+
+create account / continue as guest
+
+
+Therefore “CTA: none” is respected.
+
+The interface itself becomes the conversion mechanism.
+
+
+---
+
+Information hierarchy
+
+COUR identity
+        ↓
+Hero garment
+        ↓
+Details
+        ↓
+Collections
+        ↓
+Construction / technical story
+        ↓
+Product discovery
+        ↓
+Product detail
+        ↓
+Cart
+        ↓
+Checkout
+
+
+---
+
+Required trust signals
+
+Since no actual business claims were supplied, the system must not invent:
+
+customer counts
+
+awards
+
+press mentions
+
+testimonials
+
+sustainability claims
+
+manufacturing claims
+
+performance statistics
+
+celebrity customers
+
+
+Trust should instead come from:
+
+high-quality photography/renders
+
+precise product specifications
+
+clear sizing
+
+inventory availability
+
+transparent pricing
+
+shipping information
+
+secure checkout
+
+account/order history
+
+policies
+
+consistent product data
+
+
+
+---
+
+3. CENTRAL CREATIVE CONCEPT
+
+THE GARMENT IS THE INTERFACE
+
+The central idea is that the clothing itself behaves like a technical instrument.
+
+The background lattice is not decorative.
+
+It acts as the measurement surface around the garment.
+
+The garment becomes the central interactive object.
+
+Visual cause-and-effect
+
+GRID
+ ↓
+CURSOR / TOUCH
+ ↓
+GARMENT REACTS
+ ↓
+DETAILS REVEAL
+ ↓
+COLLECTIONS APPEAR
+ ↓
+CONSTRUCTION / MATERIAL STORY
+ ↓
+PRODUCT DISCOVERY
+
+The original reference is explicitly described as having the jacket travel down the page from screen to screen, turn toward the user's interaction and use trailing sleeve motion. 
+
+COUR retains that mechanism but makes the identity belong to COUR.
+
+
+---
+
+Central visual metaphor
+
+GARMENT → SCAN → DECODE → SELECT
+
+Imagine the visitor is looking at a fashion object through a high-end digital inspection system.
+
+The site behaves like:
+
+a garment scanner
+
+a fashion editorial
+
+a technical blueprint
+
+an ecommerce interface
+
+
+simultaneously.
+
+
+---
+
+4. RECOMMENDED EXPERIENCE ENGINE
+
+Primary engine
+
+HYBRID — INTERACTIVE 3D + WEB-NATIVE MOTION
+
+Core
+
+Three.js WebGL
+
+Supporting systems
+
+CSS transitions
+
+DOM typography
+
+SVG technical marks
+
+scroll state machine
+
+pointer interpolation
+
+shader effects
+
+lightweight parallax
+
+layout transitions
+
+
+The published reference itself is tagged Three.js + Next.js, making a Three.js-led reconstruction appropriate. 
+
+
+---
+
+Why not generated video?
+
+Video is not the correct primary engine here.
+
+The reference depends on:
+
+interaction
+
+orientation
+
+pointer response
+
+continuous garment manipulation
+
+technical overlays
+
+state transitions
+
+
+A pre-rendered video would remove much of that behavior.
+
+Therefore:
+
+Motion Engine
+
+MODE E — Hybrid
+
+Three.js garment
+       +
+scroll choreography
+       +
+pointer interaction
+       +
+DOM technical UI
+       +
+CSS/SVG micro-motion
+
+
+---
+
+Three.js scene architecture
+
+Scene
+ ├── Camera
+ ├── Garment Group
+ │    ├── Main garment mesh
+ │    ├── left sleeve
+ │    ├── right sleeve
+ │    └── optional secondary components
+ │
+ ├── Lighting
+ │    ├── blue key
+ │    ├── violet fill
+ │    └── restrained rim
+ │
+ ├── Technical Grid
+ ├── Interaction Field
+ ├── Labels
+ └── Environmental Effects
+
+The garment should not be a flat PNG pretending to be 3D.
+
+The primary desktop implementation should use a real GLB/GLTF garment asset.
+
+
+---
+
+5. ART DIRECTION
+
+Creative direction
+
+Technical luxury outerwear
+
+Not cyberpunk.
+
+Not gamer UI.
+
+Not generic futuristic SaaS.
+
+Not neon.
+
+The visual vocabulary should feel closer to:
+
+> fashion laboratory + digital instrument + dark editorial campaign
+
+
+
+
+---
+
+Color system
+
+The exact source-video colors should be calibrated during implementation against the reference capture.
+
+Initial production palette:
+
+Token	HEX	Purpose
+
+Void	#050505	Main background
+Black Surface	#0A0A0C	Elevated areas
+Grid	#15161A	Technical lattice
+Grid Active	#30333B	Cursor-reactive cells
+Primary Text	#F2F2F0	Main headings
+Secondary Text	#92949A	Metadata
+Dim Text	#5E6066	Technical annotation
+Electric Blue	#315EFF	Garment/light accents
+Violet	#744BFF	Iridescent accent
+Lavender Highlight	#ABA1FF	Reflective highlight
+
+
+These are starting calibration values, not claims that they are the exact source CSS colors.
+
+
+---
+
+Background
+
+The entire experience should sit on a nearly-black canvas.
+
+The grid:
+
+extremely thin
+
+low contrast
+
+square-cell based
+
+not constantly animated
+
+reacts locally around the pointer
+
+fades back slowly
+
+never becomes a starfield/particle background
+
+
+
+---
+
+Typography
+
+Heading personality
+
+Condensed / contemporary grotesk.
+
+Recommended stack:
+
+Primary:
+Inter Tight / equivalent condensed grotesk
+
+Secondary:
+Inter / Geist-like neutral sans
+
+Technical:
+monospace or narrow technical sans
+
+The exact font must be substituted with the closest legally usable font after visual comparison.
+
+
+---
+
+Heading behavior
+
+Large headings should be:
+
+uppercase where appropriate
+
+tightly tracked
+
+relatively light in weight
+
+short
+
+positioned asymmetrically
+
+allowed to overlap the visual field
+
+
+Examples:
+
+DETAILS
+MATTER.
+
+COLLECTIONS.
+
+CONSTRUCTION.
+
+NEED
+TO KNOW.
+
+
+---
+
+Material language
+
+The garment is the highest-contrast object.
+
+Materials should communicate:
+
+lacquer-like reflection
+
+dark synthetic surface
+
+directional highlights
+
+controlled specularity
+
+subtle roughness variation
+
+
+Avoid:
+
+chrome everywhere
+
+metallic UI
+
+exaggerated bloom
+
+HDR appearance
+
+excessive glow
+
+
+
+---
+
+Border language
+
+Very thin.
+
+Approximately:
+
+1px desktop
+hairline / fractional visual weight where possible
+
+Corners should generally be:
+
+square to subtly rounded
+
+—not giant 32–40px SaaS cards.
+
+
+---
+
+Buttons
+
+The reference's physical-looking pill treatment should be retained only where necessary.
+
+Shopping controls should use:
+
+compact geometry
+
+dark surface
+
+thin border
+
+subtle radial highlight
+
+restrained hover illumination
+
+
+
+---
+
+Cards
+
+Cards should not become a giant grid of floating rectangles.
+
+Instead:
+
+image + technical data + product identity
+
+with the background remaining visually connected.
+
+
+---
+
+6. VISUAL STORY
+
+Scene	Visual Story	Website Copy	Interaction	Scroll/Pacing
+
+01 — SILHOUETTE	COUR garment suspended over the black lattice	COUR / FORM / SURFACE / MOTION	Cursor activates nearby grid cells; garment subtly follows pointer	~100–130vh
+02 — DETAILS	Garment advances and rotates into a closer inspection state	DETAILS MATTER.	Labels decode; camera subtly pushes toward garment	~110–140vh
+03 — COLLECTIONS	Primary garment recedes while multiple COUR color/product states appear	COLLECTIONS.	Hover/touch focuses a product; selected garment becomes dominant	~100–130vh
+04 — CONSTRUCTION	Layered technical visual appears beside/behind garment	CONSTRUCTION. / technical metadata	Cursor creates local spatial response; layers shift subtly	~110–140vh
+05 — KNOW / RETURN	Garment returns to dominant hero position and settles	NEED TO KNOW.	Scroll releases the inspection state into product browsing	~100–120vh
+
+
+
+---
+
+Scene 01 — SILHOUETTE
+
+Visual
+
+Full viewport.
+
+Black.
+
+Fine grid.
+
+Garment centered with slight vertical offset.
+
+The product should appear almost like a specimen suspended inside a dark technical scanner.
+
+Camera
+
+Position: front/3-quarter
+FOV: restrained
+Depth: shallow
+Movement: very slow
+
+Scroll
+
+The object initially remains almost stationary.
+
+Scrolling primarily alters:
+
+camera depth
+
+garment rotation
+
+surrounding labels
+
+grid emphasis
+
+
+rather than moving the DOM page normally.
+
+
+---
+
+Scene 02 — DETAILS
+
+The garment becomes larger.
+
+Labels enter from static/noise.
+
+The reference specifically describes its labels “decoding” as they arrive. 
+
+Implementation:
+
+noise text
+      ↓
+partial characters
+      ↓
+correct characters
+      ↓
+stable label
+
+This should be subtle rather than a Matrix-style effect.
+
+
+---
+
+Scene 03 — COLLECTIONS
+
+The visual changes from:
+
+ONE OBJECT
+
+to:
+
+SYSTEM OF OBJECTS
+
+Multiple COUR garments should occupy the same technical field.
+
+The reference visibly uses four colored outerwear variants in the collections state.
+
+COUR can use equivalent product slots:
+
+COUR 01
+COUR 02
+COUR 03
+COUR 04
+
+Real names, prices, colors and inventory come from the database.
+
+
+---
+
+Scene 04 — CONSTRUCTION
+
+The reference contains a layered technical 3D visual.
+
+COUR should use:
+
+GARMENT
+↓
+MATERIAL
+↓
+CONSTRUCTION
+↓
+DETAIL
+
+The system must not fabricate technical claims.
+
+Any material or performance statement becomes editable CMS data.
+
+
+---
+
+Scene 05 — NEED TO KNOW
+
+Instead of becoming a conventional FAQ card wall, the technical information should appear as part of the same instrument-like visual system.
+
+Potential blocks:
+
+SIZE
+FIT
+MATERIAL
+CARE
+AVAILABILITY
+SHIPPING
+
+These are data categories, not invented claims.
+
+The garment then returns to the hero state.
+
+
+---
+
+7. FULL WEBSITE ARCHITECTURE
+
+Public layer
+
+/
+├── immersive COUR home
+│
+├── /shop
+│   ├── all
+│   ├── new
+│   └── collections
+│
+├── /collection/[slug]
+│
+├── /product/[slug]
+│
+├── /search
+│
+├── /wishlist
+│
+├── /cart
+│
+├── /checkout
+│
+├── /account
+│   ├── profile
+│   ├── orders
+│   ├── addresses
+│   └── wishlist
+│
+├── /login
+├── /register
+└── /policies/*
+
+The home page remains the visually dominant experience.
+
+
+---
+
+Homepage structure
+
+Global Navigation
+      ↓
+Three.js Stage
+      ↓
+Scroll Scene Controller
+      ↓
+Details
+      ↓
+Collections
+      ↓
+Construction
+      ↓
+Knowledge / Product Data
+      ↓
+Product Discovery
+      ↓
+Minimal Footer
+
+
+---
+
+Customer account
+
+/account
+
+Sections:
+
+profile
+
+saved products
+
+orders
+
+order detail
+
+addresses
+
+session/security
+
+sign out
+
+
+
+---
+
+Admin
+
+/admin
+
+Dashboard
+Products
+Collections
+Inventory
+Orders
+Customers
+Media
+Homepage
+Navigation
+SEO
+FAQs
+Policies
+Site Settings
+Analytics
+Audit Log
+
+
+---
+
+Technical panel
+
+/technical
+
+Restricted to technical staff.
+
+System status
+Database status
+API status
+Media status
+Background jobs
+Cache status
+Error log
+Performance
+WebGL capability reports
+Feature flags
+Deployment version
+Environment status
+
+This is not exposed to normal administrators.
+
+
+---
+
+8. INTERACTION MAP
+
+Trigger	Element	Behavior	Purpose	Desktop	Mobile	Reduced Motion
+
+Pointer move	Grid	Local cells brighten	Establish spatial interaction	Continuous	Replaced by touch region	Static grid
+Pointer move	Garment	Slight delayed rotation	Make object feel physical	3D response	Touch drag / device-independent gesture	Minimal rotation
+Scroll	Camera	Timeline-controlled movement	Story progression	Smooth interpolation	Native touch scroll mapped to state	Discrete state transitions
+Hover	Collection item	Product enlarges/focuses	Product inspection	Hover	Tap	Simple focus
+Tap	Product	Open product page	Commerce	Click	Tap	Normal navigation
+Navigation open	Menu	Technical panel slides/fades	Access pages	Animated	Full-screen mobile menu	Instant
+Enter viewport	Labels	Decode into place	Technical language	Stagger	Reduced stagger	Static
+Add to bag	Product	Short confirmation	Commerce feedback	Micro-motion	Micro-motion	Static confirmation
+
+
+
+---
+
+Motion physics
+
+The Three.js object should never instantly snap to the pointer.
+
+Use:
+
+targetRotation
+        ↓
+lerp / damp
+        ↓
+currentRotation
+
+with separate response coefficients for:
+
+body
+
+left sleeve
+
+right sleeve
+
+secondary accessory geometry
+
+
+This produces the characteristic “turning to your hand / trailing behind” behavior described by the reference. 
+
+
+---
+
+9. DESKTOP VS MOBILE PLAN
+
+Desktop
+
+Desktop should receive the full experience.
+
+Layout
+
+┌────────────────────────────────────┐
+│ technical top rail                │
+│                                    │
+│       3D GARMENT                   │
+│                                    │
+│      technical labels              │
+│                                    │
+│ grid / metadata                    │
+└────────────────────────────────────┘
+
+Desktop:
+
+3D model
+
+full pointer tracking
+
+more peripheral metadata
+
+richer camera travel
+
+wider grid
+
+stronger depth
+
+
+
+---
+
+Tablet
+
+Use the same scene but reduce:
+
+label density
+
+peripheral elements
+
+WebGL resolution
+
+shadow quality
+
+
+
+---
+
+Mobile
+
+The mobile layout should not be a shrunken desktop.
+
+The supplied reference itself is mobile-oriented, so mobile becomes a first-class composition.
+
+Mobile priorities
+
+1. garment
+
+
+2. heading
+
+
+3. technical labels
+
+
+4. collection
+
+
+5. product controls
+
+
+
+Peripheral annotation is reduced.
+
+
+---
+
+Mobile navigation
+
+Compact top layer:
+
+COUR
+        BAG
+        MENU
+
+Very restrained.
+
+
+---
+
+Mobile 3D
+
+Use:
+
+lower DPR
+
+reduced texture size
+
+lower-poly fallback
+
+fewer post-processing effects
+
+reduced shadow complexity
+
+
+Touch replaces cursor interaction.
+
+Touch gesture
+
+horizontal drag
+      ↓
+garment rotation
+
+vertical scroll
+      ↓
+story progression
+
+
+---
+
+Low-power fallback
+
+For devices where WebGL capability is insufficient:
+
+GLB unavailable
+      ↓
+high-quality prerendered image sequence
+      ↓
+scroll-driven canvas
+
+This is the primary 3D fallback.
+
+
+---
+
+10. ASSET LIST
+
+Asset	Status	Implementation
+
+COUR logo	MUST BE SUPPLIED	SVG
+Main garment 3D model	MUST BE ACQUIRED / CREATED	GLB/GLTF
+Garment textures	MUST BE ACQUIRED / CREATED	compressed WebP/KTX2 where appropriate
+Normal/roughness maps	MUST BE ACQUIRED / CREATED	PBR
+Product renders	MUST BE SUPPLIED/CREATED	WebP/AVIF
+Collection garments	MUST BE SUPPLIED/CREATED	product media
+Technical background	CAN BE CREATED IN CODE	Canvas/SVG/WebGL
+Grid	CAN BE CREATED IN CODE	WebGL/CSS
+Technical labels	CAN BE CREATED IN CODE	DOM/SVG
+Icons	CAN BE CREATED IN CODE	SVG
+Construction visual	MUST BE CREATED	Three.js / GLB
+Product thumbnails	GENERATED FROM PRODUCT DATA	responsive images
+OG images	GENERATED	server pipeline
+Favicon	MUST BE CREATED	SVG/PNG
+Mobile poster	MUST BE CREATED	optimized still
+Reduced-motion asset	MUST BE CREATED	still render
+Reference video	SUPPLIED	QA/reference only
+
+
+
+---
+
+Most important missing asset
+
+The 3D garment model.
+
+Without the actual source model, nobody can truthfully guarantee that the garment geometry will be geometrically identical to the reference.
+
+That is the single biggest dependency for pixel/behavioral fidelity.
+
+
+---
+
+11. ASSET GENERATION PROMPTS
+
+A. COUR hero garment render
+
+Create a premium technical-fashion outerwear garment presentation for the COUR
+brand.
+
+Subject:
+one dark contemporary outerwear garment suspended in a controlled studio void.
+
+Composition:
+front three-quarter garment view, centered, generous negative space,
+garment occupying approximately the central 55–65% of the frame.
+
+Lighting:
+very dark environment,
+cold electric blue key reflections,
+restrained violet iridescent secondary reflections,
+soft directional highlights,
+physically believable reflective response.
+
+Material:
+dark synthetic/lacquered-looking outerwear surface,
+subtle roughness variation,
+realistic fabric structure,
+no chrome appearance,
+no plastic toy appearance.
+
+Background:
+near-black technical environment with an extremely subtle square lattice.
+
+Style:
+editorial technical fashion campaign,
+precise,
+minimal,
+premium,
+cinematic,
+high contrast.
+
+Do not add:
+people,
+text,
+logos,
+watermarks,
+floating particles,
+neon blobs,
+extra garments,
+decorative objects.
+
+
+---
+
+B. Technical construction visual
+
+Create an abstract technical 3D material/construction visualization for
+a premium outerwear brand.
+
+Show several precisely aligned material layers suspended in dark space,
+with controlled separation and clear physical thickness.
+
+Lighting:
+blue and violet directional reflections,
+near-black environment,
+subtle technical laboratory ambience.
+
+Geometry:
+clean,
+precise,
+minimal,
+engineering-like.
+
+No text,
+no labels,
+no logo,
+no UI,
+no decorative particles,
+no fantasy machinery.
+
+
+---
+
+C. Collection product renders
+
+Create a consistent family of premium outerwear product renders.
+
+Every garment must maintain identical:
+camera height,
+lens,
+scale,
+lighting direction,
+background,
+shadow behavior,
+material realism,
+composition.
+
+Only the product/colorway changes.
+
+Near-black technical studio.
+Restrained blue/violet reflective environment.
+No typography.
+No logo.
+No watermarks.
+
+
+---
+
+Continuity rule
+
+For all generated/created scenes:
+
+SAME GARMENT GEOMETRY
+SAME SCALE
+SAME CAMERA FAMILY
+SAME LIGHT DIRECTION
+SAME ENVIRONMENT
+SAME MATERIAL RESPONSE
+
+The reference's strongest visual quality comes from continuity, not from independently generated scenes.
+
+
+---
+
+12. WEBSITE COPY
+
+The copy should be minimal because the reference's visual object does most of the communication.
+
+Brand
+
+COUR
+
+Hero
+
+FORM / SURFACE / MOTION
+
+Details
+
+DETAILS
+MATTER.
+
+Collections
+
+COLLECTIONS.
+
+Construction
+
+CONSTRUCTION.
+
+Information
+
+NEED
+TO KNOW.
+
+
+---
+
+Product naming system
+
+Until real product names are supplied:
+
+COUR 01
+COUR 02
+COUR 03
+COUR 04
+
+These are structural placeholders, not invented final product names.
+
+
+---
+
+Product metadata
+
+COLOR
+SIZE
+FIT
+MATERIAL
+CARE
+AVAILABILITY
+PRICE
+
+Each field is database-driven.
+
+No hard-coded factual claims.
+
+
+---
+
+13. GOOGLE AI STUDIO TECHNICAL BLUEPRINT
+
+Google AI Studio's current Build environment supports full-stack web applications with a React client and Node.js server runtime, including secure API calls and database connections; it can also import projects from GitHub and deploy through Cloud Run. 
+
+Next.js is explicitly a React framework for full-stack web applications, and its App Router provides the modern routing architecture used here. 
+
+
+---
+
+Recommended stack
+
+Layer	Technology
+
+Frontend	Next.js + React + TypeScript
+Routing	Next.js App Router
+3D	Three.js
+Animation	GSAP or native RAF + custom interpolation
+Styling	CSS Modules / global CSS
+UI state	Zustand
+Server state	Server Components + server fetch / TanStack Query where justified
+API	Next.js Route Handlers
+Database	PostgreSQL
+ORM	Prisma
+Authentication	Auth.js or equivalent session system
+Authorization	RBAC
+Media	S3-compatible object storage
+CDN	CDN in front of object storage
+Cache	HTTP/CDN caching; Redis optional
+Validation	Zod
+Testing	Vitest + Testing Library + Playwright
+Visual QA	Playwright screenshots + image diff
+Analytics	privacy-conscious analytics layer + ecommerce events
+Hosting	Vercel or Node-compatible cloud runtime
+Version control	GitHub
+CI/CD	GitHub Actions
+Monitoring	error/performance monitoring
+Logs	structured server logs
+
+
+
+---
+
+Component architecture
+
+app/
+├── (site)/
+│   ├── page.tsx
+│   ├── shop/
+│   ├── collection/
+│   ├── product/
+│   ├── cart/
+│   ├── checkout/
+│   └── account/
+│
+├── admin/
+│   ├── dashboard/
+│   ├── products/
+│   ├── collections/
+│   ├── orders/
+│   ├── media/
+│   ├── homepage/
+│   └── settings/
+│
+├── api/
+│   ├── products/
+│   ├── collections/
+│   ├── cart/
+│   ├── orders/
+│   ├── payments/
+│   ├── auth/
+│   └── admin/
+│
+components/
+├── three/
+├── navigation/
+├── technical-ui/
+├── products/
+├── cart/
+├── checkout/
+└── admin/
+
+lib/
+├── db/
+├── auth/
+├── payments/
+├── storage/
+├── cache/
+├── analytics/
+└── validation/
+
+
+---
+
+CMS / DATABASE ARCHITECTURE
+
+The public site should never permanently duplicate editable business content inside source code.
+
+Core collections
+
+site_settings
+
+id
+brand_name
+logo
+default_theme
+currency
+contact_email
+social_links
+maintenance_mode
+
+
+---
+
+navigation
+
+id
+label
+href
+position
+visible
+sort_order
+
+
+---
+
+homepage_sections
+
+id
+section_key
+title
+eyebrow
+body
+visibility
+sort_order
+scene_config_id
+
+
+---
+
+products
+
+id
+slug
+name
+description
+price
+status
+featured
+primary_media_id
+model_3d_id
+seo_title
+seo_description
+created_at
+updated_at
+
+
+---
+
+product_variants
+
+id
+product_id
+sku
+color
+size
+price_override
+inventory_quantity
+status
+
+
+---
+
+collections
+
+id
+slug
+name
+description
+cover_media_id
+visible
+sort_order
+
+
+---
+
+product_collections
+
+Relationship:
+
+product_id
+collection_id
+
+
+---
+
+media
+
+id
+type
+storage_key
+cdn_url
+width
+height
+duration
+mime_type
+alt_text
+poster_url
+status
+
+
+---
+
+scene_configs
+
+id
+scene_key
+model_reference
+camera_config
+lighting_config
+timeline_config
+mobile_config
+enabled
+
+Important:
+
+Business admins can change content associated with the scene, but not arbitrary Three.js engine parameters.
+
+
+---
+
+14. PERFORMANCE + ACCESSIBILITY PLAN
+
+Performance architecture
+
+Initial load
+
+Do not download the entire 3D system immediately.
+
+Sequence:
+
+HTML / critical CSS
+        ↓
+hero typography
+        ↓
+poster image
+        ↓
+Three.js runtime
+        ↓
+3D model
+        ↓
+textures
+        ↓
+secondary assets
+
+
+---
+
+Three.js requirements
+
+The scene must support:
+
+lazy initialization
+
+responsive canvas
+
+DPR clamping
+
+resize observer
+
+animation loop cancellation
+
+GPU capability detection
+
+texture compression where supported
+
+frustum discipline
+
+disposal of unused geometry/materials
+
+no unnecessary render passes
+
+
+
+---
+
+Scroll implementation
+
+Do not directly bind heavy scene logic to every raw scroll event.
+
+Use:
+
+scroll position
+      ↓
+normalized progress
+      ↓
+smoothed progress
+      ↓
+requestAnimationFrame
+      ↓
+scene state
+
+
+---
+
+Frame-sequence fallback
+
+Required behavior:
+
+progressive frame loading
+requestAnimationFrame
+smooth interpolation
+correct canvas scaling
+DPR handling
+poster fallback
+reduced-motion fallback
+
+
+---
+
+Accessibility
+
+Required:
+
+keyboard-accessible navigation
+
+visible focus
+
+semantic HTML
+
+proper button/link semantics
+
+alt text
+
+form labels
+
+contrast checks
+
+reduced-motion support
+
+no essential information locked inside WebGL
+
+no WebGL-only product controls
+
+screen-reader-accessible product information
+
+
+
+---
+
+Reduced-motion mode
+
+When:
+
+prefers-reduced-motion: reduce
+
+the site changes from:
+
+continuous camera choreography
+
+to:
+
+static garment states
++
+short opacity/position transitions
++
+normal navigation
+
+The product remains fully usable.
+
+
+---
+
+15. FINAL BUILD BRIEF
+
+COUR must be built as:
+
+> A dark, technical, interactive clothing-commerce experience where the garment itself becomes the interface.
+
+
+
+The home page should closely reproduce the observable Artefakt visual grammar:
+
+NEAR-BLACK ENVIRONMENT
+        +
+TECHNICAL LATTICE
+        +
+IRIDESCENT OUTERWEAR
+        +
+THREE.JS
+        +
+POINTER / TOUCH RESPONSE
+        +
+SCROLL-DRIVEN CAMERA
+        +
+DECODING TECHNICAL LABELS
+        +
+COLLECTION STATES
+        +
+CONSTRUCTION VISUALIZATION
+        +
+MINIMAL TYPOGRAPHY
+
+The reference listing confirms the intended conceptual ingredients: near-black outerwear, cursor-reactive lattice, travelling/turning jacket, delayed sleeve movement, and technical labels, with a Three.js/Next.js implementation classification. 
+
+
+---
+
+Production system
+
+Frontend
+
+Next.js
+React
+TypeScript
+Three.js
+CSS
+Zustand
+
+Backend
+
+Next.js server runtime
+REST / Route Handlers
+PostgreSQL
+Prisma
+validation
+business services
+
+Commerce
+
+products
+variants
+inventory
+cart
+checkout
+orders
+payments adapter
+customer accounts
+wishlists
+
+Authentication
+
+session-based authentication
+secure HTTP-only cookies
+RBAC
+admin MFA
+rate limiting
+audit logging
+
+Admin
+
+/admin
+
+Business administrators manage:
+
+Products
+Collections
+Inventory
+Orders
+Media
+Homepage
+Navigation
+SEO
+FAQs
+Policies
+Settings
+
+Customer
+
+/account
+
+Customers manage:
+
+Profile
+Orders
+Addresses
+Wishlist
+Security
+
+Technical
+
+/technical
+
+Restricted system diagnostics and deployment information.
+
+
+---
+
+16–24 IMPLEMENTATION MODULES INCORPORATED INTO THE BLUEPRINT
+
+16. MOTION ENGINE DECISION
+
+Primary: Interactive Three.js
+Secondary: DOM/SVG/CSS motion
+Fallback: Scroll-controlled frame sequence
+No generated video required for the core experience.
+
+The motion exists because it communicates:
+
+garment orientation + inspection + progression
+
+rather than being decorative.
+
+
+---
+
+17. VIDEO PRODUCTION PLAN
+
+Core website
+
+No production video dependency.
+
+The supplied video is retained as a reference/QA asset.
+
+Optional future cinematic film:
+
+COUR campaign film
+→ homepage poster
+→ optional editorial section
+
+It should not replace the interactive garment system.
+
+
+---
+
+18. VIDEO FALLBACK PLAN
+
+If an actual campaign video is later introduced:
+
+Video
+ ↓
+Desktop optimized version
+ ↓
+Mobile optimized version
+ ↓
+Poster image
+ ↓
+Static fallback
+
+Never make the production website dependent on a temporary generation URL.
+
+Generated media must be stored in permanent project-controlled storage before deployment.
+
+
+---
+
+19. CMS DATA MODEL
+
+Editable through admin:
+
+site settings
+navigation
+homepage copy
+homepage visibility/order
+products
+variants
+prices
+inventory
+collections
+product imagery
+3D asset references
+FAQs
+policies
+SEO
+social links
+footer
+announcements
+
+Protected in code:
+
+Three.js engine
+camera choreography
+shader logic
+responsive mechanics
+layout system
+animation system
+security architecture
+database logic
+
+This keeps the CMS powerful without allowing an administrator to accidentally destroy the visual system.
+
+
+---
+
+20. PUBLIC WEBSITE ↔ DATABASE MAPPING
+
+Public component	Database source	Admin control
+
+COUR logo	site_settings.logo	Site Settings
+Navigation	navigation	Navigation
+Hero heading	homepage_sections	Homepage
+Hero product	scene_configs + products	Homepage
+Collection list	collections	Collections
+Product cards	products	Products
+Price	products.price / variant override	Products
+Sizes	product_variants	Products
+Availability	inventory data	Inventory
+Product gallery	media	Media
+3D model reference	product/media relation	Products/Media
+SEO title	product/site SEO fields	SEO
+Footer	site settings	Site Settings
+
+
+
+---
+
+21. ADMIN DASHBOARD PLAN
+
+/admin
+
+Dashboard
+Products
+Collections
+Inventory
+Orders
+Customers
+Media
+Homepage
+Navigation
+SEO
+FAQ
+Policies
+Settings
+Audit Log
+
+Dashboard metrics
+
+Only actual system data:
+
+orders
+revenue
+low-stock items
+recent customers
+recent orders
+system alerts
+
+No fabricated analytics.
+
+
+---
+
+22. MEDIA STORAGE PLAN
+
+Permanent architecture:
+
+Admin upload
+      ↓
+Object storage
+      ↓
+Image processing
+      ↓
+CDN
+      ↓
+Next.js / browser
+
+Asset categories:
+
+/products
+/collections
+/3d/models
+/3d/textures
+/homepage
+/posters
+/seo
+
+Large 3D assets must not be embedded directly into JavaScript bundles.
+
+
+---
+
+23. AUTHENTICATION + AUTHORIZATION PLAN
+
+Roles
+
+CUSTOMER
+EDITOR
+OPERATIONS
+ADMIN
+TECHNICAL
+OWNER
+
+Permission model
+
+A customer cannot access:
+
+/admin
+/technical
+
+An editor cannot alter:
+
+security
+roles
+authentication configuration
+deployment
+
+Technical users can inspect system health but not necessarily change commercial data.
+
+All sensitive admin actions should produce audit records.
+
+
+---
+
+24. PRODUCTION READINESS REQUIREMENTS
+
+Before launch:
+
+Visual QA
+
+Compare:
+
+reference video
+vs
+COUR build
+
+at:
+
+full viewport
+
+2× crops
+
+4× crops
+
+hero
+
+detail state
+
+collection state
+
+construction state
+
+mobile scroll
+
+desktop
+
+tablet
+
+
+Functional QA
+
+Test:
+
+navigation
+search
+product pages
+variant selection
+cart
+checkout
+authentication
+account
+wishlist
+orders
+admin
+inventory
+media upload
+SEO
+404
+error states
+network failure
+WebGL failure
+
+Security QA
+
+Verify:
+
+authentication
+authorization
+input validation
+rate limiting
+secure cookies
+CSRF protection where applicable
+server-side authorization
+secret isolation
+file-upload validation
+audit logs
+
+Deployment
+
+GitHub
+  ↓
+CI
+  ↓
+tests
+  ↓
+build
+  ↓
+visual checks
+  ↓
+deployment
+  ↓
+production monitoring
+
+
+---
+
+FINAL CREATIVE DIRECTION
+
+The finished COUR site should not feel like:
+
+> “an ecommerce site with a Three.js hero.”
+
+
+
+It should feel like:
+
+> “a Three.js fashion object that happens to contain a complete ecommerce system.”
+
+
+
+That distinction is central.
+
+The visual system, commerce system, CMS and technical architecture should all use one coherent mental model: inspect → decode → select.
+
+Reference → COUR transformation
+
+ARTEFAKT reference
+        ↓
+same interaction grammar
+        ↓
+same visual density
+        ↓
+same technical fashion language
+        ↓
+COUR identity
+        ↓
+real product database
+        ↓
+real commerce
+        ↓
+real accounts
+        ↓
+real admin
+        ↓
+production deployment
+
+The reference confirms the use of the Three.js + Next.js direction and the specific garment/lattice/technical-label motion language; its hidden implementation remains unavailable from the supplied material, so the backend and infrastructure above are intentionally designed as a production-equivalent architecture rather than falsely presented as the original source stack.  >>>
+CINEMATIC ASSET PACKAGE:
+<<< Worked for 1m 11s
+
+COUR — CINEMATIC / VISUAL MEDIA PRODUCTION PACKAGE
+
+STEP 1 — PRODUCTION CAPABILITY AUDIT
+
+Current environment
+
+Capability	Available	Production consequence
+
+Veo / direct video generation	❌ Not callable	Cannot honestly generate Veo footage here
+Callable equivalent video model	❌ None available	Same limitation
+Image generation	✅ Available	Can create still keyframes/concept frames
+Uploaded images	✅ Available	Can inspect/use supplied reference imagery
+Uploaded video	✅ Available	Reference video is accessible for inspection
+File processing/storage	✅ Available	Can extract frames, inspect media, create production files
+Permanent project storage	⚠️ Local project storage available	Final deployment storage must be established by website project
+Three.js implementation	✅ Planned for website build	This is the correct primary motion engine for COUR
+
+
+Supplied reference video
+
+File: 1000038815.mp4
+
+Verified technical properties:
+
+Duration: 47.204 seconds
+
+Resolution: 1080 × 2400
+
+Orientation: 9:20 portrait
+
+Codec: HEVC / H.265
+
+Frames: 3,088
+
+Purpose: reference/QA footage, not final COUR media
+
+
+I also inspected sampled frames throughout the recording. The important recurring states are:
+
+HERO GARMENT
+      ↓
+DETAILS / CLOSE INSPECTION
+      ↓
+COLLECTIONS
+      ↓
+TECHNOLOGY / MATERIAL LAYERS
+      ↓
+GARMENT RETURN
+      ↓
+NEED TO KNOW
+
+
+---
+
+PRODUCTION PATH SELECTED
+
+PATH B — PRODUCTION PACKAGE + FALLBACK
+
+The approved COUR blueprint does not actually require a pre-rendered cinematic video as its core motion system.
+
+Its central motion depends on:
+
+Three.js garment + scroll + pointer/touch + technical overlays + spatial transitions.
+
+Replacing that with generated video would lose the most important interaction.
+
+Therefore the production strategy is:
+
+PRIMARY
+Three.js interactive garment
+        ↓
+SECONDARY
+web-native motion
+        ↓
+OPTIONAL CINEMATIC VIDEO
+campaign / editorial footage
+        ↓
+FALLBACK
+prerendered frame sequence
+
+This is the production-correct interpretation of the approved blueprint.
+
+
+---
+
+1. MASTER VISUAL PRODUCTION CONCEPT
+
+COUR — THE GARMENT AS A DIGITAL SPECIMEN
+
+The visual world is a dark technical inspection environment.
+
+The garment does not simply sit in the environment.
+
+It is:
+
+measured → examined → rotated → decoded → separated → understood → selected
+
+The visual language should preserve the supplied reference's core grammar:
+
+near-black environment
+
+precise technical lattice
+
+iridescent/directional garment reflections
+
+controlled blue/violet lighting
+
+small engineering metadata
+
+large editorial typography
+
+spatial product movement
+
+restrained interface elements
+
+continuous object identity
+
+
+But the generated media must be COUR-specific, not a direct asset-level reproduction.
+
+
+---
+
+2. REQUIRED VISUAL MEDIA INVENTORY
+
+There are two different media classes.
+
+A. CORE WEBSITE MEDIA
+
+These are required.
+
+Asset	Status
+
+COUR hero 3D garment	MISSING
+COUR garment textures	MISSING
+PBR roughness/normal maps	MISSING
+Collection garment models/renders	MISSING
+Construction / layered garment model	MISSING
+Product photography/renders	MISSING
+Technical stills	READY FOR EXTERNAL GENERATION
+Mobile poster frames	READY FOR EXTERNAL GENERATION
+
+
+B. OPTIONAL CINEMATIC VIDEO
+
+These are enhancement assets rather than the core interaction engine.
+
+Video	Purpose
+
+COUR-01-HERO	opening atmosphere
+COUR-02-DETAILS	product inspection chapter
+COUR-03-COLLECTION	editorial collection transition
+COUR-04-CONSTRUCTION	material/technology film
+COUR-05-ENDSTATE	final garment hold
+
+
+
+---
+
+3. VIDEO WEBSITE MODE DECISION
+
+Asset	Mode	Reason
+
+COUR-01-HERO	LOOP / CHAPTER VIDEO	Atmospheric introduction
+COUR-02-DETAILS	CHAPTER VIDEO	Better as controlled editorial footage
+COUR-03-COLLECTION	TRANSITION VIDEO	Connects object states
+COUR-04-CONSTRUCTION	CHAPTER VIDEO	Technical story
+COUR-05-ENDSTATE	LOOP / HOLD	Closing atmosphere
+
+
+Important
+
+I am not recommending that generated video replace the Three.js scroll choreography.
+
+The generated footage is best used as:
+
+cinematic layer
++
+section transitions
++
+campaign/editorial content
+
+while:
+
+garment inspection
++
+rotation
++
+scroll progression
++
+touch interaction
+
+remain interactive Three.js.
+
+
+---
+
+4. ASSET COUR-01-HERO
+
+Purpose
+
+Establish the COUR world before the visitor begins inspecting the garment.
+
+Model recommendation
+
+Veo / equivalent high-fidelity image-to-video model
+
+Reference images
+
+Required:
+
+1. final approved COUR hero garment render
+
+
+2. orthographic or clean frontal garment render
+
+
+3. material reference
+
+
+4. lighting reference
+
+
+
+The supplied Artefakt recording should be used as style/reference only, not as a source frame to reproduce its garment.
+
+
+---
+
+FIRST-FRAME PROMPT
+
+Create the opening frame of a premium technical-fashion commercial for
+the COUR clothing brand.
+
+A single COUR outerwear garment is suspended in a deep near-black
+technical environment.
+
+The garment is centered slightly above the vertical midpoint.
+
+Environment:
+near-black,
+extremely subtle precision square lattice,
+minimal technical atmosphere,
+no visible room,
+no horizon,
+no decorative objects.
+
+Lighting:
+cool electric blue directional highlights,
+restrained violet secondary reflections,
+physically believable reflective response,
+dark controlled shadows.
+
+Garment:
+maintain exact geometry of the supplied COUR reference garment.
+Do not redesign, reshape, embellish, simplify, or invent garment details.
+
+Camera:
+front three-quarter view,
+premium editorial product cinematography,
+moderate telephoto character,
+stable composition,
+ample negative space.
+
+No typography.
+No logo generated by the model.
+No UI.
+No people.
+No particles.
+No random elements.
+
+
+---
+
+VIDEO PROMPT
+
+A premium cinematic technical-fashion product shot.
+
+The exact COUR outerwear garment remains geometrically consistent
+throughout the shot.
+
+The garment is suspended in a near-black technical inspection environment.
+
+At the beginning it is almost motionless.
+
+A very slow controlled camera push begins while the garment makes an
+extremely subtle rotation toward a three-quarter inspection angle.
+
+The garment's reflective surface catches controlled blue and violet
+directional highlights.
+
+The surrounding technical grid remains almost static, with only a
+very subtle localized brightness response near the garment.
+
+Motion is deliberate, restrained and physically believable.
+
+The garment must remain the same:
+same silhouette,
+same sleeves,
+same collar,
+same seams,
+same proportions,
+same material structure.
+
+No morphing.
+No fabric redesign.
+No changing garment parts.
+No random rotation.
+No camera shake.
+No environment change.
+No text.
+No labels.
+No logo generation.
+No additional garments.
+
+Finish with the garment settled in a clean three-quarter inspection
+position suitable for continuation into the DETAILS sequence.
+
+LAST-FRAME PROMPT
+
+Same exact COUR garment and environment.
+
+End on a stable three-quarter product inspection position.
+
+Garment centered slightly right of frame.
+
+Camera closer than the opening frame.
+
+Blue-violet reflective highlights remain consistent.
+
+No new objects.
+
+No text.
+
+No geometry changes.
+
+The garment must be visually suitable as the starting reference for
+the next close-detail shot.
+
+Negative instructions
+
+No garment morphing
+No topology changes
+No extra sleeves
+No duplicated garments
+No hands
+No people
+No mannequins
+No text
+No UI
+No generated logo
+No typography
+No random particles
+No floating fabric fragments
+No changing colorway
+No camera spin
+No lens distortion
+No environment replacement
+No sudden exposure shifts
+No impossible reflections
+
+Technical specification
+
+Desktop: 16:9
+Mobile: 9:16
+Duration: 6–8 sec
+Recommended delivery: 24 fps
+Website mode: looping/chapter background
+Expected end state: stable three-quarter garment
+
+
+---
+
+5. ASSET COUR-02-DETAILS
+
+Purpose
+
+Move from overall silhouette to material/detail inspection.
+
+FIRST FRAME
+
+Use:
+
+> Accepted final frame of COUR-01-HERO
+
+
+
+This should be supplied as the visual starting reference whenever the external model supports image/reference-frame conditioning.
+
+
+---
+
+VIDEO PROMPT
+
+Continue directly from the supplied final frame of COUR-01-HERO.
+
+The same exact COUR garment remains in the same environment.
+
+Camera slowly moves toward the upper torso and construction details.
+
+The movement is an optical product-inspection move, not a dramatic
+camera move.
+
+The garment makes a slight natural counter-rotation.
+
+Material highlights travel across the surface as the camera changes
+position.
+
+Maintain identical:
+garment geometry,
+color,
+materials,
+lighting direction,
+environment,
+camera orientation,
+scale relationships.
+
+The environment's technical lattice remains subtle.
+
+The feeling is precision inspection of an engineered fashion object.
+
+No morphing.
+No changing seams.
+No disappearing panels.
+No newly invented details.
+No typography.
+No labels.
+No logo.
+No interface.
+
+
+---
+
+LAST FRAME
+
+Close three-quarter upper-garment view.
+
+A stable area should remain available around the garment for website DOM labels to be composited later.
+
+Duration
+
+5–7 sec
+
+Ratio
+
+Desktop: 16:9
+
+Mobile: 9:16
+
+
+Mode
+
+Chapter video
+
+
+---
+
+6. ASSET COUR-03-COLLECTION
+
+Purpose
+
+Transition from one garment to the larger COUR collection.
+
+This should not be generated as four independently morphing garments.
+
+That is a major continuity risk.
+
+Instead:
+
+primary garment
+      ↓
+camera / spatial transition
+      ↓
+separate collection garments enter
+
+
+---
+
+FIRST FRAME
+
+Use the accepted final frame of COUR-02-DETAILS.
+
+
+---
+
+VIDEO PROMPT
+
+Continue from the final frame of the previous COUR product-inspection shot.
+
+The camera gradually widens.
+
+The original COUR garment remains stable long enough to establish continuity.
+
+Additional distinct COUR garments enter the surrounding spatial field
+through controlled camera-relative movement.
+
+Each garment is physically separate.
+
+Maintain consistent:
+lighting,
+material behavior,
+scale,
+camera direction,
+background,
+technical lattice.
+
+The collection should feel like a family of engineered fashion objects
+being brought into the same inspection environment.
+
+Do not morph one garment into another.
+
+Do not duplicate geometry accidentally.
+
+Do not alter garment construction.
+
+Do not create random clothing designs.
+
+No typography.
+No logo.
+No UI.
+No product names rendered into footage.
+
+Duration
+
+5–7 sec
+
+Mode
+
+Transition video
+
+
+---
+
+7. ASSET COUR-04-CONSTRUCTION
+
+Purpose
+
+Create the material/construction chapter from the blueprint.
+
+This is the most technically demanding optional generated-video asset.
+
+
+---
+
+FIRST FRAME
+
+Start from a COUR garment reference.
+
+
+---
+
+VIDEO PROMPT
+
+Premium technical-fashion visualization showing the internal material
+construction of a COUR outerwear garment.
+
+Use a physically coherent exploded construction visualization.
+
+The visible layers separate slightly along a controlled vertical axis,
+revealing the relationship between outer shell, intermediate layer and
+inner construction.
+
+The layers remain precisely aligned.
+
+Movement is slow, mechanical and intentional.
+
+Lighting remains identical to the COUR technical environment:
+near-black background,
+blue directional reflections,
+restrained violet highlights.
+
+The materials remain physically believable.
+
+No fantasy machinery.
+
+No microscopic biological imagery.
+
+No random components.
+
+No text.
+
+No labels.
+
+No logo.
+
+No invented technical claims.
+
+The final arrangement is clean, aligned and suitable for the website to
+place DOM typography around the composition.
+
+Duration
+
+6 sec
+
+Mode
+
+Chapter video
+
+
+---
+
+8. ASSET COUR-05-ENDSTATE
+
+Purpose
+
+Return the experience to the garment.
+
+Prompt
+
+Continue from the COUR technical construction environment.
+
+The separated layers slowly return toward their final assembled state.
+
+The camera transitions back toward the main COUR garment presentation.
+
+End on a clean, stable hero composition.
+
+The garment is physically coherent and completely assembled.
+
+Maintain the same:
+geometry,
+material,
+lighting,
+camera family,
+scale,
+background,
+grid behavior.
+
+No morphing.
+No sudden camera movement.
+No new garments.
+No text.
+No interface.
+
+Duration
+
+5–6 sec
+
+Website mode
+
+Loop / hold
+
+
+---
+
+9. CAMERA CONTINUITY PACKAGE
+
+All clips must share the same visual cinematography.
+
+Lens character
+
+Recommended:
+
+50–85mm equivalent product-film perspective
+
+Avoid ultra-wide lenses.
+
+
+---
+
+Camera behavior
+
+HERO
+slow push
++
+subtle rotation
+
+DETAILS
+controlled push-in
++
+micro-orbit
+
+COLLECTION
+controlled pull-back
++
+spatial reveal
+
+CONSTRUCTION
+gentle lateral / axial movement
+
+END
+slow return
++
+stabilization
+
+No shot should feel handheld.
+
+
+---
+
+10. LIGHTING CONTINUITY
+
+Key
+
+Cold directional blue.
+
+Secondary
+
+Very restrained violet.
+
+Fill
+
+Near-black.
+
+Reflection
+
+The product reflection should carry the color.
+
+The environment itself should not become a purple/blue glowing room.
+
+
+---
+
+11. MATERIAL CONTINUITY
+
+Every generated clip must preserve:
+
+fabric construction
+
+zipper placement
+
+seam placement
+
+collar shape
+
+sleeve dimensions
+
+hem shape
+
+surface roughness
+
+reflective behavior
+
+colorway
+
+
+The model must never reinterpret the garment between clips.
+
+
+---
+
+12. MOBILE MASTER STRATEGY
+
+A simple center crop of a 16:9 film is not acceptable for the important shots.
+
+The supplied reference itself is a tall portrait experience, so mobile needs deliberate composition.
+
+Desktop
+
+GARMENT
+    CENTER
+technical field extending left + right
+
+Mobile
+
+GARMENT
+    fills vertical
+       field
+technical information
+      around it
+
+Mobile camera
+
+The mobile version should use:
+
+tighter vertical composition
+
+taller garment framing
+
+reduced lateral camera travel
+
+more headroom/footroom
+
+fewer peripheral elements
+
+
+Master ratio
+
+9:16
+
+Desktop ratio
+
+16:9
+
+
+---
+
+13. VIDEO FALLBACK PLAN
+
+Since direct generation is unavailable, the strongest implementation fallback is:
+
+THREE.JS → FRAME SEQUENCE → STATIC POSTER
+
+Tier 1
+
+Real-time Three.js.
+
+Tier 2
+
+Pre-rendered image sequence.
+
+Tier 3
+
+High-resolution static product poster.
+
+Tier 4
+
+DOM-only experience for extreme low-power/reduced-motion environments.
+
+
+---
+
+Frame-sequence production specification
+
+For each cinematic state:
+
+01.webp
+02.webp
+03.webp
+...
+N.webp
+
+Recommended:
+
+WebP or AVIF
+
+1,500–2,500 px long side depending on final visual density
+
+progressive loading
+
+low-res first frame
+
+high-res replacement
+
+memory-aware disposal
+
+
+The frame sequence is especially appropriate for:
+
+garment rotation
+
+technical construction
+
+collection transitions
+
+product close inspection
+
+
+because these are exactly the areas where precise scroll control matters more than actual motion-video playback.
+
+
+---
+
+14. FRAME-SEQUENCE FALLBACK PROMPT
+
+Use a single controlled 3D render pipeline, not independent AI generations.
+
+Master render prompt
+
+Generate a sequence of consistent high-resolution product frames for an
+interactive web experience.
+
+The exact COUR garment must remain identical across every frame.
+
+Only the specified camera orientation, camera distance, or controlled
+object rotation may change.
+
+Preserve:
+geometry,
+materials,
+seams,
+zipper,
+collar,
+sleeves,
+lighting,
+background,
+scale,
+shadow behavior.
+
+Technical environment:
+near-black,
+subtle square lattice,
+blue/violet directional reflections.
+
+No typography.
+No UI.
+No logo.
+No extra objects.
+
+Every adjacent frame must be geometrically continuous.
+
+
+---
+
+15. 3D PRIMARY ASSET PACKAGE
+
+This is actually more important than generated video for the approved COUR website.
+
+Required
+
+COUR_GARMENT_MASTER.glb
+
+Target:
+
+GLB
+
+physically based materials
+
+clean topology
+
+embedded or referenced textures
+
+correct origin
+
+consistent scale
+
+optimized polygon count
+
+separate logical components where secondary motion is required
+
+
+
+---
+
+Suggested node hierarchy
+
+COUR_GARMENT
+├── BODY
+├── COLLAR
+├── LEFT_SLEEVE
+├── RIGHT_SLEEVE
+├── FRONT_DETAILS
+├── ZIPPER
+└── SECONDARY_ELEMENTS
+
+This allows the website to create:
+
+body rotation
++
+sleeve lag
++
+secondary motion
+
+without needing video.
+
+
+---
+
+16. TEXTURE PACKAGE
+
+Required:
+
+COUR_basecolor.webp
+COUR_normal.webp
+COUR_roughness.webp
+COUR_metalness.webp
+COUR_ao.webp
+
+Optional:
+
+COUR_emissive.webp
+
+Only use emissive data when actual garment evidence supports it.
+
+Do not turn the clothing into a glowing sci-fi object.
+
+
+---
+
+17. REFERENCE VIDEO HANDLING
+
+The supplied video remains:
+
+REF-ARTEFAKT-MOBILE-001
+
+Purpose:
+
+visual QA / motion reference
+
+It must not be:
+
+renamed into COUR footage
+
+deployed to the public website
+
+presented as COUR campaign content
+
+used as the product asset
+
+
+Its role is:
+
+Reference
+ ↓
+measurement
+ ↓
+implementation comparison
+ ↓
+visual QA
+
+
+---
+
+18. PERMANENT STORAGE ARCHITECTURE
+
+When assets are generated externally:
+
+Generation service
+        ↓
+Download accepted asset
+        ↓
+MASTER ARCHIVE
+        ↓
+Web optimization
+        ↓
+CDN / permanent object storage
+        ↓
+Website
+
+Never:
+
+temporary generation URL
+        ↓
+production website
+
+
+---
+
+Recommended permanent structure
+
+/cour-media/
+│
+├── master/
+│   ├── video/
+│   ├── stills/
+│   └── 3d/
+│
+├── web/
+│   ├── video/
+│   ├── images/
+│   ├── textures/
+│   └── models/
+│
+├── posters/
+│
+└── qa/
+
+
+---
+
+19. CINEMATIC ASSET MANIFEST
+
+Asset ID	Purpose	Desktop/Mobile	Dimensions	Duration	Format	Master	Web	Poster	Start	End	Website use	Status
+
+REF-ARTEFAKT-MOBILE-001	Supplied reference / QA	Mobile	1080×2400	47.204s	MP4 / HEVC	supplied file	Do not deploy	N/A	N/A	N/A	Reference only	SUPPLIED
+COUR-01-HERO	Hero atmosphere	16:9 + 9:16	TBD	6–8s	MP4	external generation	/web/video/hero	Required	Hero frame	Stable 3/4	Loop/chapter	READY FOR EXTERNAL GENERATION
+COUR-02-DETAILS	Garment inspection	16:9 + 9:16	TBD	5–7s	MP4	external generation	/web/video/details	Required	Hero end	Close detail	Chapter	READY FOR EXTERNAL GENERATION
+COUR-03-COLLECTION	Collection reveal	16:9 + 9:16	TBD	5–7s	MP4	external generation	/web/video/collection	Required	Detail end	Collection state	Transition	READY FOR EXTERNAL GENERATION
+COUR-04-CONSTRUCTION	Technical material story	16:9 + 9:16	TBD	~6s	MP4	external generation	/web/video/construction	Required	Construction start	Layered state	Chapter	READY FOR EXTERNAL GENERATION
+COUR-05-ENDSTATE	Closing garment state	16:9 + 9:16	TBD	5–6s	MP4	external generation	/web/video/endstate	Required	Previous end	Hero hold	Loop/hold	READY FOR EXTERNAL GENERATION
+COUR-GARMENT-MASTER	Primary interactive object	Responsive	TBD	N/A	GLB	external 3D production	/web/models/cour	N/A	N/A	N/A	Three.js	MISSING
+COUR-TEXTURES	Garment materials	Responsive	TBD	N/A	WebP/KTX2	external 3D production	/web/textures/cour	N/A	N/A	N/A	Three.js	MISSING
+COUR-FRAME-FALLBACK	Video/3D fallback	Desktop + Mobile	TBD	N/A	WebP/AVIF sequence	external render	/web/sequences/cour	First frame	Frame 01	Final frame	Scroll sequence	READY FOR EXTERNAL GENERATION
+
+
+
+---
+
+20. GENERATION ORDER
+
+Do not start by generating five independent videos.
+
+Correct sequence:
+
+01
+COUR garment master
+        ↓
+02
+approved hero still
+        ↓
+03
+COUR-01-HERO
+        ↓
+04
+accept final frame
+        ↓
+05
+COUR-02-DETAILS
+        ↓
+06
+accept final frame
+        ↓
+07
+COUR-03-COLLECTION
+        ↓
+08
+COUR-04-CONSTRUCTION
+        ↓
+09
+COUR-05-ENDSTATE
+
+This minimizes continuity drift.
+
+
+---
+
+21. ACCEPTANCE CHECKLIST
+
+A generated asset is accepted only when:
+
+Product
+
+exact garment silhouette preserved
+
+no geometry mutation
+
+no missing components
+
+no duplicated components
+
+material remains coherent
+
+
+Camera
+
+deliberate movement
+
+no random zoom
+
+no sudden perspective change
+
+no unwanted shake
+
+
+Lighting
+
+consistent direction
+
+consistent intensity
+
+consistent color family
+
+physically plausible reflection
+
+
+Environment
+
+stable grid
+
+stable background
+
+no new objects
+
+no random particles
+
+
+Continuity
+
+Clip N final frame
+      ≈
+Clip N+1 starting frame
+
+
+---
+
+22. FINAL PRODUCTION DECISION
+
+Core COUR website motion
+
+Three.js
+
+This remains the primary system.
+
+Optional cinematic layer
+
+External Veo/equivalent generation
+
+Used only where video genuinely improves the story.
+
+Primary fallback
+
+Three.js → prerendered frame sequence
+
+Secondary fallback
+
+Static high-resolution product render
+
+Reduced-motion
+
+Static / minimally animated states
+
+
+---
+
+ASSET PACKAGE STATUS
+
+Category	Status
+
+Reference media	✅ SUPPLIED
+Video capability audit	✅ Complete
+Cinematic concept	✅ Complete
+Connected shot plan	✅ Complete
+Desktop composition plan	✅ Complete
+Mobile composition plan	✅ Complete
+Video prompts	✅ Ready
+First/last frame prompts	✅ Ready
+Continuity system	✅ Ready
+Frame-sequence fallback	✅ Ready
+Permanent storage architecture	✅ Ready
+3D garment master	❌ MISSING
+Final COUR product photography	❌ MISSING
+Final production videos	⏳ READY FOR EXTERNAL GENERATION
+
+
+The major unresolved production dependency is the actual COUR garment asset. Without a real garment/model/reference image, the production package can specify the shots precisely but cannot honestly claim final COUR-specific footage has been created.
+
+ >>>
+AVAILABLE ASSETS:
+<<< ATTACH/LIST >>> ==================================================
+ARCHITECTURE
+Build this as a full-stack web application.
+Prefer the native Google AI Studio full-stack environment.
+Use:
+FRONTEND
+React or the environment's recommended supported web framework.
+SERVER
+Server-side runtime for secure operations.
+DATABASE
+Firebase Cloud Firestore.
+AUTHENTICATION
+Firebase Authentication.
+MEDIA
+Firebase / Google Cloud Storage or the appropriate persistent project-controlled storage.
+DEPLOYMENT
+Use the deployment architecture supported by Google AI Studio.
+Never expose secret keys in browser code.
+==================================================
+FIREBASE INTEGRATION
+Explicitly configure Firebase integration.
+Use Cloud Firestore for persistent content.
+Use Firebase Authentication for administrators.
+Use secure Firebase Security Rules.
+If Google AI Studio presents an Enable Firebase integration step, stop only when the user must 
+perform that account-level confirmation, then continue configuration afterward.
+==================================================
+DATABASE-FIRST CONTENT
+Editable website content must come from the database.
+Do not permanently hardcode business content that is supposed to be editable.
+Create an appropriate Firestore content model based on the blueprint.
+Possible collections/documents include:
+siteSettings
+navigation pages
+sections
+products
+services
+collections
+faqs
+testimonials
+team
+media
+seo
+forms
+users
+roles
+Only create collections the business actually needs.
+==================================================
+SECTION MODEL
+When useful, make page sections structured and reorderable.
+A section should conceptually support fields such as:
+id
+type
+page
+order
+enabled
+variant
+content
+media
+settings
+updatedAt
+Do NOT build an unrestricted drag-anything page builder.
+Use approved section types.
+Protect complex design and animation code from accidental administrator damage.
+==================================================
+PUBLIC WEBSITE
+Render database content into the premium approved design.
+The public website must retain: art direction
+typography
+motion
+cinematic storytelling
+3D
+scroll interactions
+responsive composition
+conversion flow
+Database-driven does NOT mean generic.
+The CMS exists underneath the custom design.
+==================================================
+ADMIN ROUTE
+Create:
+/admin
+Unauthenticated visitors must not gain editing access.
+Provide an appropriate login experience.
+After login, authorized administrators receive the CMS dashboard.
+==================================================
+ADMIN DASHBOARD
+Create a polished, simple dashboard appropriate for a business owner.
+Potential navigation:
+Dashboard
+Pages
+Products
+Services
+Media
+Navigation
+FAQs
+Testimonials
+SEO
+Site Settings
+Only show modules the current website needs.
+==================================================
+CONTENT EDITING
+Allow administrator editing for appropriate fields including:
+headlines
+body copy
+eyebrows
+buttons links
+contact information
+product information
+pricing
+features
+FAQs
+testimonials
+navigation labels
+footer information
+SEO
+social links
+announcement content
+Use:
+text fields
+text areas
+rich text only where justified
+toggles
+select fields
+URL fields
+number fields
+repeatable items
+Validate data before saving.
+==================================================
+MEDIA MANAGEMENT
+Allow authorized administrators to manage appropriate media:
+images
+posters
+product photos
+videos
+Support:
+upload
+preview
+replace
+select
+delete where safe
+Persist uploads to permanent project-controlled storage.
+Store media metadata/references in Firestore.
+Do not store large video binary data directly inside Firestore documents.
+==================================================
+CINEMATIC MEDIA
+Support fields such as: desktopHeroVideo
+mobileHeroVideo
+heroPoster
+desktopSequence
+mobileSequence
+product3DModel
+depending on the approved architecture.
+The administrator should be able to replace approved media assets without rewriting website 
+code.
+However, do NOT expose fragile animation-engine parameters unless the blueprint explicitly 
+requires them.
+==================================================
+VEO-GENERATED ASSETS
+If cinematic assets were generated through Veo or another model:
+Do NOT reference temporary generation URLs in the deployed website.
+Persist the accepted video first.
+Use the permanent asset URL/path.
+If server-side Veo generation is intentionally included as an ADMIN TOOL:
+• keep Gemini/API credentials server-side
+• require administrator authorization
+• show generation progress
+• handle long-running operations
+• require human approval before replacing live media
+• persist accepted output
+• do not automatically publish unsuccessful generations
+Generated-video creation is optional CMS functionality.
+The website itself must not depend on generating footage during normal visitor page loads.
+==================================================
+DRAFT + PUBLISH WORKFLOW
+Where practical, distinguish:
+DRAFT
+and
+PUBLISHED
+content.
+Editing should not automatically destroy the currently live page.
+Allow an administrator to: edit
+preview
+save
+publish
+For simpler sites where draft/publish architecture would add unjustified complexity, implement 
+save/update safely and document that choice.
+==================================================
+AUTHORIZATION
+Authentication alone is insufficient.
+Implement authorization.
+Create a secure admin role strategy.
+Prefer:
+Firebase custom claims
+or
+a protected user-role record enforced by Security Rules.
+Do NOT trust only:
+hidden UI
+client-side route checks
+email strings in frontend code
+Security must also be enforced at database/storage access level.
+==================================================
+SECURITY RULES
+Use default-deny thinking.
+PUBLIC CONTENT
+May be readable publicly where necessary.
+ADMIN CONTENT
+Writes require authorized admin status.
+PRIVATE DATA
+Must not be exposed through public queries.
+MEDIA WRITES
+Require authorized administrators.
+Validate:
+types
+expected fields file sizes
+media types
+ownership/role where appropriate
+Never deploy broad production rules such as:
+allow read, write: if true;
+==================================================
+SEO CMS
+Allow administrators to edit appropriate SEO fields:
+page title
+meta description
+social title
+social description
+social image
+canonical URL where appropriate
+index/noindex control where appropriate
+Public pages should retain logical HTML heading structure.
+==================================================
+FORM DATA
+If the site contains leads/contact forms, define where submissions go.
+Options may include:
+Firestore
+email service
+CRM
+external endpoint
+Never silently create a form that discards real submissions.
+If Firestore stores submissions:
+separate them from public site content
+and restrict reads to admins.
+==================================================
+PUBLIC + ADMIN SEPARATION
+The public website must remain:
+fast
+minimal
+beautiful
+SEO-aware
+conversion-focused
+Do not ship the complete admin interface into the visitor experience unnecessarily. Admin design may prioritize utility over cinematic effects.
+==================================================
+MOTION IMPLEMENTATION
+Implement the approved motion engine.
+Possible modes:
+cinematic autoplay video
+scroll-scrub video
+frame sequence
+3D
+web-native motion
+hybrid
+Do not substitute one mode for another without a technical reason.
+==================================================
+VIDEO PERFORMANCE
+Use appropriate:
+poster
+preload behavior
+lazy loading
+responsive source selection
+muted autoplay requirements
+playsInline behavior
+fallback
+Do not download desktop and mobile cinematic masters simultaneously when only one is 
+needed.
+==================================================
+FRAME SEQUENCE PERFORMANCE
+If used:
+progressive loading
+requestAnimationFrame
+interpolation
+DPR-aware rendering
+correct resize handling
+responsive sequence selection
+poster fallback
+reduced-motion fallback
+memory management
+==================================================
+RESPONSIVE
+Test: desktop
+tablet
+small phone
+large phone
+Mobile is a composed experience, not just desktop scaled down.
+Use dedicated mobile cinematic assets when supplied.
+==================================================
+REDUCED MOTION
+Honor prefers-reduced-motion.
+Provide:
+poster imagery
+normal page flow
+minimal transitions
+The content and CTA must remain completely usable.
+==================================================
+ADMIN EDITABILITY MAP
+Before finalizing, verify every intended editable item.
+Create a mapping:
+PUBLIC ELEMENT
+DATABASE FIELD
+ADMIN CONTROL
+PUBLISH BEHAVIOR
+No supposedly editable public content should secretly remain hardcoded.
+==================================================
+SEED DATA
+Populate Firestore with the approved initial website content.
+The first public render should reproduce the approved design/content rather than appear empty.
+==================================================
+PRODUCTION QA
+Test:
+PUBLIC SITE
+navigation
+CTA
+cinematic media
+content
+mobile
+forms SEO
+loading
+fallbacks
+ADMIN
+login
+logout
+unauthorized access
+content edit
+media upload
+save
+publish
+validation
+error states
+DATABASE
+persistence
+permissions
+public reads
+admin writes
+private collections
+STORAGE
+upload permissions
+public asset access where required
+admin write restrictions
+==================================================
+FINAL HANDOFF
+Return:
+FULL-STACK BUILD REPORT
+1. Public website
+2. Motion engine
+3. Firebase project/integration
+4. Firestore schema
+5. Authentication method
+6. Admin authorization method
+7. Admin URL
+8. CMS modules
+9. Editable content
+10. Media storage 11. Form handling
+12. Deployment
+13. Remaining manual configuration
+14. Security items requiring review
+15. How a client edits the website
+Finish:
+REAL WEBSITE BUILD COMPLETE — run the Production QA prompt before delivery.

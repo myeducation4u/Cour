@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "COUR — Form / Surface / Motion",
+      "hasCanvas": false,
+      "bodyTextLen": 2919,
+      "bodyTextHash": "31f7854607768a1e5caa10ccba5a401653981e0d4a20cf2c1b5db5ebce1f63b7",
+      "bodyTextPrefix": "COUR PLEASE WAIT COUR SHOP COLLECTIONS TECHNOLOGY ABOUT CART [ 0",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "COUR — Form / Surface / Motion",
+      "hasCanvas": false,
+      "bodyTextLen": 2648,
+      "bodyTextHash": "3ea01af46df2d560a75d16f24a95c82fd51538d0af9cf42f3cd206794c607a67",
+      "bodyTextPrefix": "COUR PLEASE WAIT COUR CART [ 0 ] MENU WEATHER-RESISTANT. THERMAL",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}
