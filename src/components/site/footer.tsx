@@ -1,9 +1,22 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { submitInquiry } from "@/lib/server/storefront";
-import { BrandMark } from "@/components/site/brand-mark";
+import { BrandWord } from "@/components/site/brand-mark";
 import type { NavItem, SiteSettings } from "@/lib/types";
 
+const POLICY_LINKS = [
+  { label: "SHIPPING", slug: "shipping" },
+  { label: "RETURNS", slug: "returns" },
+  { label: "PRIVACY", slug: "privacy" },
+  { label: "TERMS", slug: "terms" },
+] as const;
+
+/**
+ * Footer.
+ *
+ * Sits outside the homepage's sticky stage track on purpose — see the structural
+ * note in `home/experience.tsx`. The reference recording never scrolls past the
+ * KNOW chapter, so the footer's composition follows the *existing* workspace
+ * conventions (the same grid, the same mono scale) rather than an invented one.
+ */
 export function SiteFooter({
   settings,
   items,
@@ -11,70 +24,72 @@ export function SiteFooter({
   settings: SiteSettings;
   items: NavItem[];
 }) {
-  const footer = items.filter((i) => i.location === "footer");
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "busy" | "ok" | "err">("idle");
+  const links = items.filter((i) => i.location === "footer");
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-line px-5 py-10 md:px-8">
-      <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[1.2fr_1fr_1fr]">
-        <div>
-          <BrandMark />
-          <p className="mt-3 max-w-sm text-sm text-mist">
-            {settings.footerNote ?? "Technical outerwear, built as an object."}
+    <footer className="cour-footer">
+      <div className="cour-footer-inner">
+        <div className="cour-footer-brand">
+          <BrandWord className="cour-footer-word" />
+          <p className="cour-footer-blurb">
+            {settings.tagline ??
+              "Technical outerwear built in small runs. Engineered for motion, finished by hand, and shipped worldwide from the studio."}
           </p>
-          <p className="mt-6 font-mono text-[0.62rem] tracking-[0.16em] text-dim">
-            STAY AHEAD OF THE DROP.
-          </p>
-          <form
-            className="mt-3 flex max-w-sm gap-2"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              if (status === "busy") return;
-              setStatus("busy");
-              try {
-                await submitInquiry({ data: { email, kind: "newsletter" } });
-                setStatus("ok");
-                setEmail("");
-              } catch {
-                setStatus("err");
-              }
-            }}
-          >
-            <input
-              className="cour-field"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="EMAIL"
-              aria-label="Email for drop notices"
-              disabled={status === "busy"}
-            />
-            <button className="cour-btn shrink-0" type="submit" disabled={status === "busy"}>
-              {status === "busy" ? "JOINING" : "JOIN"}
-            </button>
-          </form>
-          <p className="mt-2 font-mono text-[0.62rem] text-mist" aria-live="polite">
-            {status === "ok" ? "Recorded." : status === "err" ? "Could not save that email." : "\u00a0"}
+          <p className="cour-footer-coords" aria-hidden="true">
+            40.7128° N / 74.0060° W
           </p>
         </div>
-        <div className="flex flex-col gap-2">
-          {footer.map((item) => (
-            <Link
-              key={item.id}
-              to={item.href as "/"}
-              className="font-mono text-[0.62rem] tracking-[0.16em] text-mist hover:text-ink"
-            >
-              {item.label}
-            </Link>
-          ))}
+
+        <nav className="cour-footer-col" aria-label="Shop">
+          <h2 className="cour-footer-h">SHOP</h2>
+          <ul>
+            <li>
+              <Link to="/shop">ALL JACKETS</Link>
+            </li>
+            {links.map((item) => (
+              <li key={item.id}>
+                <Link to={item.href as "/"}>{item.label}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <nav className="cour-footer-col" aria-label="Policies">
+          <h2 className="cour-footer-h">POLICIES</h2>
+          <ul>
+            {POLICY_LINKS.map((policy) => (
+              <li key={policy.slug}>
+                <Link to="/policies/$slug" params={{ slug: policy.slug }}>
+                  {policy.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="cour-footer-col">
+          <h2 className="cour-footer-h">CONTACT</h2>
+          <ul>
+            <li>
+              <a href={`mailto:${settings.contactEmail ?? ""}`}>{(settings.contactEmail ?? "STUDIO@COUR.STUDIO").toUpperCase()}</a>
+            </li>
+            <li>
+              <Link to="/about">ABOUT THE STUDIO</Link>
+            </li>
+            <li>
+              <Link to="/account">ACCOUNT</Link>
+            </li>
+          </ul>
         </div>
-        <div className="font-mono text-[0.62rem] tracking-[0.14em] text-dim">
-          <p>{settings.shippingNote}</p>
-          <p className="mt-4">{settings.contactEmail}</p>
-          <p className="mt-8">© {new Date().getFullYear()} {settings.brandName}</p>
-        </div>
+      </div>
+
+      <div className="cour-footer-base">
+        <p>
+          © {year} {settings.brandName.toUpperCase()}
+        </p>
+        <p>{settings.currency} / WORLDWIDE</p>
+        <p className="cour-footer-note">{settings.footerNote ?? "ALL RIGHTS RESERVED"}</p>
       </div>
     </footer>
   );

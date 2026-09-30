@@ -8,9 +8,18 @@
   src: url("/fonts/barlow-condensed-500.woff2") format("woff2");
 }
 
+/*
+ * Tokens.
+ *
+ * The greys are sampled from the reference frames rather than picked by eye:
+ * the stage background is a near-black (#060608) with a faint blue-grey bloom
+ * behind the specimen, the grid sits at ~7% and ~12% white, and the copy runs
+ * from #f3f2ee (primary) through #8e8e93 (secondary) to #5c5c63 (tertiary).
+ */
 @theme {
-  --color-void: #050506;
-  --color-surface: #0c0c0e;
+  --color-void: #000000;
+  --color-stage: #0a0a0c;
+  --color-surface: #0c0c0f;
   --color-elevated: #121216;
   --color-grid: #1a1a1f;
   --color-grid-active: #2c2c34;
@@ -27,6 +36,14 @@
   --radius-ctl: 0.12rem;
   --radius-pill: 999px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Stage inset. Measured from the reference frames: on an 864px-wide capture
+     the stage frame runs x35 → x828, i.e. 4.05% in from each side. */
+  --stage-inset: clamp(6px, 4.05vw, 44px);
+  /* Stage aspect: 793 × 566 in the reference, both axes identical across all
+     five chapter frames — the frame does not move or resize as the scene plays. */
+  --stage-ratio: 1.4011;
+  --stage-micro-grid: 8px;
+  --stage-major-grid: 40px;
 }
 
 @layer base {
@@ -74,9 +91,16 @@
   h3 {
     text-wrap: balance;
   }
+
+  :focus-visible {
+    outline: 1px solid rgb(243 242 238 / 70%);
+    outline-offset: 2px;
+  }
 }
 
 @layer components {
+  /* ---------------------------------------------------------------- primitives */
+
   .cour-label {
     font-family: var(--font-mono);
     font-size: 0.625rem;
@@ -96,9 +120,10 @@
   .cour-wordmark {
     font-family: var(--font-display);
     font-weight: 500;
-    letter-spacing: 0.32em;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
-    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
+    font-size: 1.18rem;
+    line-height: 1;
   }
 
   .cour-btn {
@@ -106,14 +131,14 @@
     align-items: center;
     justify-content: center;
     gap: 0.55rem;
-    min-height: 2.45rem;
-    padding: 0 1.05rem;
+    min-height: max(1.75rem, calc(var(--u) * 4.2));
+    padding: 0 max(0.75rem, calc(var(--u) * 1.5));
     border-radius: var(--radius-ctl);
     border: 1px solid var(--color-line-strong);
     background: rgb(12 12 14 / 55%);
     color: var(--color-ink);
     font-family: var(--font-mono);
-    font-size: 0.62rem;
+    font-size: var(--t-small);
     font-weight: 500;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -152,82 +177,196 @@
     border-color: rgb(243 242 238 / 40%);
   }
 
-  .cour-app {
-    padding: 10px;
-    min-height: 100dvh;
+  /* -------------------------------------------------------------------- brand */
+
+  .cour-mark {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.32rem;
+    color: var(--color-ink);
+    text-decoration: none;
   }
 
+  .cour-mark-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+  }
+
+  .cour-mark-glyph {
+    width: calc(var(--u) * 0.78);
+    height: calc(var(--u) * 1.2);
+    flex-shrink: 0;
+    fill: currentColor;
+  }
+
+  .cour-mark-slash {
+    fill: var(--color-void);
+  }
+
+  .cour-mark-word {
+    font-family: var(--font-display);
+    font-size: max(0.85rem, calc(var(--u) * 1.9));
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* The rule under the wordmark: 1px, slightly warmer than the hairline colour,
+     and exactly as wide as the word it sits beneath. */
+  .cour-mark-rule {
+    width: calc(var(--u) * 8.2);
+    height: 1px;
+    background: rgb(243 242 238 / 42%);
+  }
+
+  /* -------------------------------------------------------------- stage shell */
+
+  .cour-app {
+    position: relative;
+    min-height: 100dvh;
+    /* No padding here: on the homepage the sticky viewport owns the inset, and
+       on every other route `.cour-stage-page` owns it. Padding in both places
+       would inset the stage twice and push the sticky band off centre. */
+    padding: 0;
+  }
+
+  /* The sticky track. Its height is the stage's scroll range and nothing else:
+     the footer lives outside it, so copy changes below the fold can never
+     stretch the timeline. */
   .cour-pin {
     position: relative;
   }
 
-  .cour-stage {
+  /* Sticky window: full height, the stage band centred inside it. Sticking the
+     window rather than the band keeps the sticky offset a constant 0, which is
+     what makes the band's position independent of its own height. */
+  .cour-viewport {
     position: sticky;
-    top: 10px;
+    top: 0;
     z-index: 10;
-    height: calc(100dvh - 20px);
+    display: grid;
+    place-items: center;
+    height: 100dvh;
+    padding: var(--stage-inset);
+    /* A size container: 100cqw/100cqh below resolve to the space the stage has
+       after the inset, which is the only measurement that matters here. */
+    container-type: size;
+  }
+
+  .cour-stage {
+    position: relative;
+    z-index: 10;
+    /* Fixed aspect at the reference's ratio, with a floor so a phone-width band
+       cannot collapse into an unreadable strip. The height is whichever is
+       smaller of the space available vertically and the height that a full-width
+       stage would take; `width: auto` then follows from the ratio. */
+    --stage-max-h: 100cqh;
+    --stage-ideal-h: calc(100cqw / var(--stage-ratio));
+    height: min(var(--stage-max-h), max(min(21rem, var(--stage-max-h)), var(--stage-ideal-h)));
+    width: auto;
+    max-width: 100%;
+    aspect-ratio: 793 / 566;
+    /* Container queries: every internal metric below is expressed against the
+       stage's own width, so the composition holds at 793px and at 1400px alike. */
+    container-type: inline-size;
+    /* `cqw` is 1% of the stage's width; because the stage is aspect-locked,
+       `--v` is exactly 1% of its height (566/793). Neither `cqh` nor `dvh` may
+       be used below this line: a container with `container-type: inline-size`
+       cannot answer block-axis queries, so `cqh` would silently fall back to the
+       viewport and blow the composition apart on a tall window. */
+    --u: 1cqw;
+    --v: calc(var(--u) * 0.7137);
+    --t-micro: max(7.5px, calc(var(--u) * 0.95));
+    --t-small: max(8px, calc(var(--u) * 1.05));
+    --t-body: max(9px, calc(var(--u) * 1.3));
+    --gutter: max(0.75rem, calc(var(--u) * 1.9));
     overflow: hidden;
     isolation: isolate;
-    border: 1px solid rgb(243 242 238 / 24%);
-    border-radius: var(--radius-frame);
+    border: 1px solid rgb(243 242 238 / 20%);
+    border-radius: clamp(0.6rem, 3.1cqw, 1.5rem);
     background:
-      radial-gradient(ellipse 58% 50% at 50% 46%, rgb(28 34 52 / 0.42), transparent 68%),
-      var(--color-void);
-    --form-o: 1;
-    --surf-o: 0;
-    --line-o: 0;
-    --build-o: 0;
-    --know-o: 0;
+      radial-gradient(ellipse 52% 34% at 50% 47%, rgb(34 40 62 / 0.3), transparent 70%),
+      radial-gradient(ellipse 90% 60% at 50% 50%, rgb(16 18 26 / 0.55), transparent 78%),
+      var(--color-stage);
+    /* Every animated value is published here by `useStageProgress`; these are
+       the p = 0 values so the first paint is already the composed stage. */
+    --course: 0.0000;
     --jx: 0%;
     --jy: 0%;
     --js: 1;
     --jo: 1;
+    --jz: 0px;
+    --sep: 0;
     --rail: 0;
+    --form-o: 1;
+    --form-y: 0%;
+    --form-v: visible;
+    --form-p: auto;
+    --surface-o: 0;
+    --surface-v: hidden;
+    --line-o: 0;
+    --line-v: hidden;
+    --build-o: 0;
+    --build-v: hidden;
+    --know-o: 0;
+    --know-v: hidden;
   }
 
+  /* The frame's rules are its own border plus a bottom sheen. The reference
+     frame carries exactly one horizontal line per edge — the border — with a
+     short reflection falling away below it; there is no rule under the nav. */
+  .cour-stage-frame {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 -16px 24px -20px rgb(255 255 255 / 10%),
+      0 30px 48px -34px rgb(0 0 0 / 95%);
+  }
+
+  /* Non-sticky variant used by the inner pages (shop, product, account, …): the
+     same frame, without the pinned scroll range. */
   .cour-stage-page {
     position: relative;
     top: auto;
     height: auto;
-    min-height: calc(100dvh - 20px);
+    min-height: calc(100dvh - (var(--stage-inset) * 2));
+    margin: var(--stage-inset);
     overflow: clip;
   }
 
   .cour-track {
-    height: 420vh;
+    height: 460vh;
     pointer-events: none;
   }
 
+  /* ------------------------------------------------------------------ texture */
+
+  /* Micro-grid: an 8px lattice at ~7% over a 40px lattice at ~12%, both masked
+     by a soft ellipse so the field fades toward the frame edges. */
   .cour-grid {
     position: absolute;
     inset: 0;
     z-index: 0;
     pointer-events: none;
     background-image:
-      linear-gradient(rgb(243 242 238 / 8%) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(243 242 238 / 8%) 1px, transparent 1px),
-      linear-gradient(rgb(243 242 238 / 13%) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(243 242 238 / 13%) 1px, transparent 1px);
+      linear-gradient(rgb(243 242 238 / 3.6%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(243 242 238 / 3.6%) 1px, transparent 1px),
+      linear-gradient(rgb(243 242 238 / 6.5%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(243 242 238 / 6.5%) 1px, transparent 1px);
     background-size:
-      8px 8px,
-      8px 8px,
-      40px 40px,
-      40px 40px;
-    mask-image: radial-gradient(ellipse 82% 74% at 50% 46%, #000 28%, transparent 86%);
-    -webkit-mask-image: radial-gradient(ellipse 82% 74% at 50% 46%, #000 28%, transparent 86%);
-  }
-
-  .cour-grid-hot {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    width: 240px;
-    height: 240px;
-    margin: -120px 0 0 -120px;
-    pointer-events: none;
-    background: radial-gradient(circle, rgb(243 242 238 / 9%), transparent 68%);
-    will-change: transform;
+      calc(var(--u) * 0.68) calc(var(--u) * 0.68),
+      calc(var(--u) * 0.68) calc(var(--u) * 0.68),
+      calc(var(--u) * 3.4) calc(var(--u) * 3.4),
+      calc(var(--u) * 3.4) calc(var(--u) * 3.4);
+    opacity: 0.9;
+    mask-image: radial-gradient(ellipse 78% 66% at 50% 48%, #000 26%, transparent 86%);
+    -webkit-mask-image: radial-gradient(ellipse 78% 66% at 50% 48%, #000 26%, transparent 86%);
   }
 
   .cour-hud {
@@ -241,29 +380,34 @@
     position: absolute;
     width: 0.7rem;
     height: 0.7rem;
-    border-color: rgb(243 242 238 / 42%);
+    border-color: rgb(243 242 238 / 30%);
   }
+
+  /* -------------------------------------------------------------------- rail */
 
   .cour-rail {
     position: absolute;
-    top: 18%;
-    right: 8px;
+    top: 22%;
+    right: 7px;
     z-index: 45;
-    width: 3px;
-    height: 64%;
-    border-radius: 99px;
-    background: rgb(243 242 238 / 10%);
+    width: 2px;
+    height: 56%;
+    border-radius: var(--radius-pill);
+    background: rgb(243 242 238 / 9%);
+    pointer-events: none;
   }
 
   .cour-rail-thumb {
     display: block;
-    width: 3px;
-    height: 18%;
-    border-radius: 99px;
-    background: rgb(243 242 238 / 42%);
-    transform: translateY(calc(var(--rail, 0) * 430%));
+    width: 2px;
+    height: 14%;
+    border-radius: var(--radius-pill);
+    background: rgb(243 242 238 / 46%);
+    transform: translateY(calc(var(--rail, 0) * 614%));
     will-change: transform;
   }
+
+  /* ------------------------------------------------------------------ loader */
 
   .cour-loader {
     position: absolute;
@@ -273,41 +417,43 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 0.85rem;
     background: var(--color-void);
-    transition: opacity 420ms var(--ease-out);
+    animation: cour-fade 260ms var(--ease-out) both;
   }
 
-  .cour-loader.is-gone {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+  .cour-loader-word {
+    font-size: 1.5rem;
   }
 
-  .cour-mark {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--color-ink);
-    font-family: var(--font-display);
-    font-size: 0.92rem;
-    letter-spacing: 0.28em;
+  .cour-loader-note {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--color-dim);
   }
 
-  .cour-mark-badge {
-    width: 1.12rem;
-    height: 1.12rem;
-    flex-shrink: 0;
+  @keyframes cour-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
+
+  /* --------------------------------------------------------------------- nav */
 
   .cour-nav {
     position: relative;
     z-index: 50;
     display: flex;
-    min-height: 3.35rem;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 0.8rem 1.15rem;
+    /* Centre of the chrome band measured 25px below the frame top in the
+       reference, i.e. ~4.4% of the stage height. */
+    padding: max(0.7rem, calc(var(--u) * 1.8)) var(--gutter) max(0.55rem, calc(var(--u) * 1.4));
   }
 
   .cour-nav.is-overlay {
@@ -316,29 +462,50 @@
     top: 0;
   }
 
+  .cour-nav-list {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .cour-nav-item {
+    position: relative;
+  }
+
   .cour-nav-links {
     display: none;
   }
 
-  @media (min-width: 768px) {
+  .cour-nav-list {
+    gap: calc(var(--u) * 2);
+  }
+
+  /* Container queries, not viewport queries: the stage is an aspect-locked band,
+     so what matters for the composition is the stage's own width — a wide phone
+     in landscape can hold the full nav while a narrow window cannot. */
+  @container (min-width: 38rem) {
     .cour-nav-links {
       position: absolute;
       left: 50%;
       display: flex;
       translate: -50% 0;
       align-items: center;
-      gap: 1.55rem;
     }
   }
 
   .cour-nav-link {
-    font-family: var(--font-mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    color: var(--color-mist);
     display: inline-flex;
     align-items: center;
     gap: 0.28rem;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+    color: var(--color-mist);
+    background: none;
+    border: 0;
+    padding: 0;
+    transition: color 160ms var(--ease-out);
   }
 
   .cour-nav-link.is-on,
@@ -355,6 +522,53 @@
     opacity: 0.7;
   }
 
+  .cour-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .cour-nav-cart-count {
+    color: var(--color-ink);
+  }
+
+  .cour-nav-burger {
+    display: inline-flex;
+  }
+
+  @container (min-width: 38rem) {
+    .cour-nav-burger {
+      display: none;
+    }
+  }
+
+  .cour-nav-menu {
+    position: absolute;
+    top: 1.6rem;
+    left: 50%;
+    z-index: 60;
+    translate: -50% 0;
+    min-width: 12rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.6rem;
+    background: rgb(9 9 12 / 97%);
+    padding: 0.6rem 0.75rem;
+    box-shadow: 0 24px 48px -28px rgb(0 0 0 / 95%);
+  }
+
+  .cour-nav-menu-link {
+    display: block;
+    padding: 0.34rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.18em;
+    color: var(--color-mist);
+  }
+
+  .cour-nav-menu-link:hover {
+    color: var(--color-ink);
+  }
+
   .cour-nav-sheet {
     position: absolute;
     inset-inline: 0.7rem;
@@ -365,157 +579,232 @@
     gap: 0.9rem;
     border: 1px solid var(--color-line);
     border-radius: 0.9rem;
-    background: rgb(12 12 14 / 96%);
+    background: rgb(12 12 14 / 97%);
     padding: 1.1rem 1.15rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
   }
+
+  .cour-nav-sheet-link {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    color: var(--color-mist);
+  }
+
+  .cour-nav-sheet-link:hover {
+    color: var(--color-ink);
+  }
+
+  /* --------------------------------------------------------- chapter index */
 
   .cour-index {
     display: none;
   }
 
-  @media (min-width: 900px) {
+  /*
+   * The chapter index exists for navigation, not for looks: the timeline is
+   * deterministic, so a reader who wants SURFACE can jump straight to it instead
+   * of scrolling the whole cinematic. It only appears once the stage is wide
+   * enough to hold it in the left margin *and* keep the edge copy clear.
+   */
+  @container (min-width: 66rem) {
     .cour-index {
       pointer-events: auto;
       position: absolute;
       top: 50%;
-      left: 1.05rem;
+      left: calc(var(--u) * 1.6);
       z-index: 30;
       display: flex;
       translate: 0 -50%;
       flex-direction: column;
-      gap: 0.42rem;
+      gap: 0.4rem;
     }
   }
 
   .cour-index-btn {
+    display: flex;
+    gap: 0.45rem;
+    background: none;
+    border: 0;
+    padding: 0;
     font-family: var(--font-mono);
-    font-size: 0.56rem;
-    letter-spacing: 0.18em;
-    color: rgb(243 242 238 / 38%);
+    font-size: var(--t-micro);
+    letter-spacing: 0.17em;
+    color: rgb(243 242 238 / 34%);
     text-align: left;
+    transition: color 200ms var(--ease-out);
   }
 
   .cour-index-btn.is-on {
-    color: rgb(243 242 238 / 88%);
+    color: rgb(243 242 238 / 92%);
   }
+
+  .cour-index-n {
+    color: rgb(243 242 238 / 24%);
+  }
+
+  .cour-index-btn.is-on .cour-index-n {
+    color: rgb(243 242 238 / 60%);
+  }
+
+  /* ---------------------------------------------------------------- specimen */
 
   .cour-slot {
     position: absolute;
-    top: 48%;
-    left: 50%;
+    /* Measured from the reference: the specimen's centre sits at 58% across and
+       44% down the frame, i.e. right of centre and slightly high. */
+    top: 44%;
+    left: 58%;
     z-index: 8;
-    width: min(60vw, 460px);
-    transform: translate3d(-50%, -50%, 0) translate3d(var(--jx, 0%), var(--jy, 0%), 0)
+    width: min(calc(var(--u) * 46), calc(var(--v) * 66));
+    transform:
+      translate3d(-50%, -50%, 0)
+      translate3d(var(--jx, 0%), var(--jy, 0%), var(--jz, 0px))
       scale(var(--js, 1));
     opacity: var(--jo, 1);
     will-change: transform, opacity;
-    perspective: 900px;
     pointer-events: none;
   }
 
   .cour-tilt {
     transform-style: preserve-3d;
     will-change: transform;
+    /* The pointer response is a settle, not a follow. */
+    transition: transform 520ms var(--ease-out);
   }
 
   .cour-jacket {
     display: block;
     width: 100%;
     height: auto;
-    max-height: 62dvh;
+    max-height: min(calc(var(--u) * 52), calc(var(--v) * 72));
     object-fit: contain;
-    filter: brightness(1.08) contrast(1.06) saturate(1.1);
+    filter: brightness(1.07) contrast(1.06) saturate(1.08)
+      drop-shadow(0 38px 60px rgb(0 0 0 / 72%));
     pointer-events: none;
   }
 
+  /* ------------------------------------------------------------------ layers */
+
+  /*
+   * One rule per chapter: opacity, offset, stacking and hit-testing all come
+   * from the timeline's custom properties, so the DOM class list never has to be
+   * rewritten mid-scroll and the five bodies cannot fall out of sync.
+   */
   .cour-layer {
     position: absolute;
     inset: 0;
-    z-index: 12;
+    z-index: calc(12 + var(--lz, 0));
     pointer-events: none;
     will-change: opacity, transform;
   }
 
-  [data-act="form"] .cour-layer-form a,
-  [data-act="form"] .cour-layer-form button,
-  [data-act="surface"] .cour-layer-surf a,
-  [data-act="surface"] .cour-layer-surf button,
-  [data-act="line"] .cour-layer-line a,
-  [data-act="line"] .cour-layer-line button,
-  [data-act="build"] .cour-layer-build a,
-  [data-act="build"] .cour-layer-build button,
-  [data-act="know"] .cour-layer-know a,
-  [data-act="know"] .cour-layer-know button {
-    pointer-events: auto;
-  }
-
   .cour-layer-form {
+    opacity: var(--form-o, 1);
     visibility: var(--form-v, visible);
-    transform: translate3d(0, calc((1 - var(--form-o, 1)) * -14px), 0);
+    transform: translate3d(0, calc((1 - var(--form-o, 1)) * -12px), 0);
+    --lz: 0;
   }
 
-  .cour-layer-surf {
-    visibility: var(--surf-v, hidden);
-    transform: translate3d(0, calc((1 - var(--surf-o, 0)) * 18px), 0);
+  .cour-layer-surface {
+    opacity: var(--surface-o, 0);
+    visibility: var(--surface-v, hidden);
+    transform: translate3d(0, calc((1 - var(--surface-o, 0)) * 16px), 0);
+    --lz: 1;
   }
 
   .cour-layer-line {
+    opacity: var(--line-o, 0);
     visibility: var(--line-v, hidden);
-    transform: translate3d(0, calc((1 - var(--line-o, 0)) * 22px), 0);
+    transform: translate3d(0, calc((1 - var(--line-o, 0)) * 20px), 0);
+    --lz: 2;
   }
 
   .cour-layer-build {
+    opacity: var(--build-o, 0);
     visibility: var(--build-v, hidden);
-    transform: translate3d(0, calc((1 - var(--build-o, 0)) * 16px), 0);
+    transform: translate3d(0, calc((1 - var(--build-o, 0)) * 14px), 0);
+    --lz: 3;
   }
 
   .cour-layer-know {
+    opacity: var(--know-o, 0);
     visibility: var(--know-v, hidden);
-    transform: translate3d(12px, calc((1 - var(--know-o, 0)) * 18px), 0);
+    transform: translate3d(0, calc((1 - var(--know-o, 0)) * 18px), 0);
+    --lz: 4;
   }
 
-  [data-act="form"] .cour-layer-form,
-  [data-act="surface"] .cour-layer-surf,
-  [data-act="line"] .cour-layer-line,
-  [data-act="build"] .cour-layer-build,
-  [data-act="know"] .cour-layer-know {
-    z-index: 16;
+  /*
+   * Interactivity follows the chapter's own state variable. A chapter at 0.4
+   * opacity is mid-transition: its links are visible but not clickable, and they
+   * are hidden from the tab order by the `tabIndex` the component applies.
+   */
+  .cour-layer-form a,
+  .cour-layer-form button {
+    pointer-events: var(--form-p, auto);
   }
+
+  .cour-layer-surface a,
+  .cour-layer-surface button {
+    pointer-events: var(--surface-p, none);
+  }
+
+  .cour-layer-line a,
+  .cour-layer-line button {
+    pointer-events: var(--line-p, none);
+  }
+
+  .cour-layer-build a,
+  .cour-layer-build button {
+    pointer-events: var(--build-p, none);
+  }
+
+  .cour-layer-know a,
+  .cour-layer-know button {
+    pointer-events: var(--know-p, none);
+  }
+
+  /* --------------------------------------------------------- FORM (chapter 1) */
 
   .cour-edge {
     position: absolute;
-    top: 36%;
-    max-width: 15rem;
+    top: 50%;
+    max-width: calc(var(--u) * 16);
+    translate: 0 -50%;
     font-family: var(--font-mono);
-    font-size: 0.6rem;
-    line-height: 1.55;
-    letter-spacing: 0.16em;
-    color: rgb(243 242 238 / 78%);
+    font-size: var(--t-micro);
+    line-height: 1.75;
+    letter-spacing: 0.14em;
+    color: rgb(243 242 238 / 82%);
+    text-transform: uppercase;
   }
 
   .cour-edge-l {
-    left: 6.2rem;
+    left: max(0.55rem, calc(var(--u) * 1.4));
   }
 
   .cour-edge-r {
-    right: 2.4rem;
+    right: max(0.55rem, calc(var(--u) * 1.4));
     text-align: right;
   }
 
   .cour-chip {
     position: absolute;
-    bottom: 5.6rem;
+    bottom: max(0.85rem, calc(var(--u) * 3.2));
     z-index: 14;
     display: flex;
-    max-width: 16.5rem;
     align-items: center;
-    gap: 0.7rem;
+    gap: 0.5rem;
+    max-width: calc(var(--u) * 21);
     border: 1px solid var(--color-line);
     background: rgb(8 8 10 / 62%);
-    padding: 0.55rem 0.7rem;
+    padding: calc(var(--u) * 0.45) calc(var(--u) * 0.6);
+  }
+
+  .cour-chip-icon {
+    width: calc(var(--u) * 1.2);
+    height: calc(var(--u) * 1.2);
+    flex-shrink: 0;
+    color: var(--color-signal);
   }
 
   .cour-chip strong,
@@ -526,189 +815,594 @@
 
   .cour-chip strong {
     font-family: var(--font-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.14em;
+    font-size: var(--t-micro);
+    letter-spacing: 0.13em;
   }
 
   .cour-chip em {
-    margin-top: 0.2rem;
-    font-size: 0.58rem;
+    margin-top: 0.14rem;
+    font-size: var(--t-micro);
     line-height: 1.35;
     color: var(--color-mist);
   }
 
   .cour-chip-l {
-    left: 1.2rem;
+    left: var(--gutter);
   }
 
   .cour-chip-r {
-    right: 1.2rem;
+    right: var(--gutter);
   }
 
   .cour-hero-foot {
     position: absolute;
-    right: 1.2rem;
-    bottom: 1.15rem;
-    left: 1.2rem;
+    right: var(--gutter);
+    bottom: max(0.85rem, calc(var(--u) * 3.2));
+    left: var(--gutter);
     z-index: 14;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.65rem;
+    gap: calc(var(--u) * 0.9);
     text-align: center;
   }
 
   .cour-ticker {
-    max-width: 46rem;
+    max-width: calc(var(--u) * 34);
     font-family: var(--font-mono);
-    font-size: 0.56rem;
+    font-size: var(--t-micro);
     letter-spacing: 0.16em;
+    text-transform: uppercase;
     color: var(--color-mist);
   }
 
-  .cour-layer-split {
+  /* ------------------------------------------------------ SURFACE (chapter 2) */
+
+  .cour-layer-surface {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 5.4rem 1.15rem 1.3rem;
+    justify-content: center;
+    gap: calc(var(--v) * 3);
+    padding: calc(var(--v) * 14) var(--gutter) calc(var(--v) * 8);
   }
 
-  @media (min-width: 768px) {
-    .cour-layer-split {
+  @container (min-width: 44rem) {
+    .cour-layer-surface {
       display: grid;
-      grid-template-columns: 0.95fr 1fr;
+      grid-template-columns: 0.85fr 1.15fr;
       align-items: center;
-      padding: 5.4rem 4.5rem 1.6rem 5.4rem;
+      gap: calc(var(--u) * 3);
+      padding: calc(var(--v) * 12) calc(var(--u) * 4) calc(var(--v) * 8) calc(var(--u) * 4);
     }
   }
 
   .cour-readout {
-    max-width: 28rem;
+    max-width: 26rem;
+  }
+
+  .cour-details-title {
+    font-size: clamp(2.1rem, 5.6vw, 3.6rem);
+  }
+
+  .cour-details-body {
+    margin-top: 0.9rem;
+    max-width: 30ch;
+    font-size: 0.72rem;
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+    color: var(--color-mist);
+  }
+
+  .cour-details-cta {
+    margin-top: 1.3rem;
   }
 
   .cour-spec-col {
     display: flex;
-    max-height: 58dvh;
+    max-height: calc(var(--v) * 52);
     flex-direction: column;
-    gap: 0.45rem;
+    gap: 0.4rem;
     overflow: auto;
+    scrollbar-width: none;
   }
 
-  @media (min-width: 768px) {
+  .cour-spec-col::-webkit-scrollbar {
+    display: none;
+  }
+
+  @container (min-width: 44rem) {
     .cour-spec-col {
       margin-left: auto;
-      max-width: 21.5rem;
+      width: calc(var(--u) * 27);
+      max-height: calc(var(--v) * 52);
     }
   }
 
   .cour-spec {
     border: 1px solid var(--color-line);
-    background: rgb(8 8 10 / 55%);
-    padding: 0.62rem 0.75rem;
+    background: rgb(8 8 10 / 58%);
+    padding: 0.55rem 0.7rem 0.62rem;
   }
 
+  /* Stagger: the cards resolve in sequence as the chapter fades in, keyed off
+     the chapter's own opacity so it can never run ahead of the timeline.
+     `opacity` is clamped by the browser at computed-value time, so the overshoot
+     above 1 in this expression is harmless by construction — the offset only
+     moves the moment at which each card reaches full strength. */
+  .cour-spec {
+    opacity: calc((var(--surface-o, 0) - var(--i, 0) * 0.06) * 2.4);
+    transform: translate3d(0, calc((1 - var(--surface-o, 0)) * 10px), 0);
+  }
+
+  .cour-spec-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .cour-spec-id {
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    letter-spacing: 0.18em;
+    color: var(--color-dim);
+  }
+
+  .cour-spec-title {
+    margin-top: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .cour-spec-body {
+    margin-top: 0.24rem;
+    font-size: 0.62rem;
+    line-height: 1.45;
+    color: var(--color-mist);
+  }
+
+  /* --------------------------------------------------------- LINE (chapter 3) */
+
+  /*
+   * The rail is the frame: four plates tiled edge to edge, inset to the same
+   * margin as the rest of the frame so the hairline between plates reads as one
+   * of the stage's rules. Each plate carries the reference's own furniture —
+   * index, name, price, the SHOP NOW reveal on hover — which is why the tiles
+   * are borderless and translucent rather than cards.
+   */
   .cour-layer-line {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 5.1rem 1.15rem 0;
+    justify-content: center;
+    gap: calc(var(--v) * 2.4);
+    padding: calc(var(--v) * 10) calc(var(--u) * 4) calc(var(--v) * 7);
   }
 
   .cour-line-head {
     display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    padding-inline: 0.2rem;
+    /* Heading left, its sentence set to the right of it — the arrangement the
+       reference frame shows above the rail. */
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: calc(var(--u) * 6);
   }
 
-  @media (min-width: 768px) {
-    .cour-line-head {
-      flex-direction: row;
-      align-items: flex-end;
-      justify-content: space-between;
-      padding-inline: 4.4rem;
-    }
+  .cour-line-title {
+    font-size: calc(var(--u) * 5.2);
+  }
+
+  .cour-line-body {
+    max-width: calc(var(--u) * 40);
+    font-size: var(--t-micro);
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+    color: var(--color-mist);
   }
 
   .cour-film {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.45rem;
-    padding: 0 0.2rem 0.9rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    margin-top: calc(var(--v) * 1.6);
+    border: 1px solid var(--color-line);
+    border-radius: calc(var(--u) * 0.5);
+    background: rgb(8 8 10 / 55%);
+    overflow: hidden;
   }
 
-  @media (min-width: 768px) {
-    .cour-film {
-      grid-template-columns: repeat(4, 1fr);
-      padding: 0 4.4rem 1rem;
+  .cour-line-foot {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* --------------------------------------------------------- BUILD (chapter 4) */
+
+  .cour-layer-build {
+    position: absolute;
+    inset: 0;
+    display: block;
+    padding: 0;
+  }
+
+  /* The exploded stack occupies the middle of the frame and is the only thing
+     the chapter centres; the heading hangs in the upper-left corner and the
+     layer labels sit in the right margin, exactly as the reference frame shows. */
+  .cour-build-art {
+    position: absolute;
+    inset: calc(var(--v) * 22) calc(var(--u) * 13) calc(var(--v) * 10) calc(var(--u) * 13);
+    display: grid;
+    place-items: center;
+  }
+
+  .cour-stack {
+    position: relative;
+    /* The plates share a 900 × 1208 canvas; the stack is sized by the frame's
+       height and lets its width follow from the ratio. */
+    height: min(calc(var(--v) * 62), calc(var(--u) * 46));
+    width: auto;
+    aspect-ratio: 900 / 1208;
+  }
+
+  .cour-stack-plate {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: contrast(1.05) saturate(1.06);
+    transform: translate3d(0, calc(var(--i, 0) * var(--sep, 0) * var(--stack-gap, calc(var(--v) * 5))), 0);
+    will-change: transform;
+  }
+
+  .cour-layer-list {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--v) * 2);
+    padding: 0 var(--gutter);
+  }
+
+  @container (min-width: 44rem) {
+    .cour-layer-list {
+      position: absolute;
+      top: 50%;
+      right: calc(var(--u) * 4);
+      width: calc(var(--u) * 25);
+      translate: 0 -50%;
+      padding: 0;
+      gap: calc(var(--v) * 2.4);
     }
   }
+
+  .cour-layer-item {
+    display: flex;
+    align-items: flex-start;
+    gap: calc(var(--u) * 0.5);
+    opacity: 0.45;
+    transition: opacity 220ms var(--ease-out);
+  }
+
+  .cour-layer-item.is-on {
+    opacity: 1;
+  }
+
+  .cour-layer-item strong,
+  .cour-layer-item em {
+    display: block;
+    font-style: normal;
+  }
+
+  .cour-layer-idx {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.16em;
+    color: var(--color-dim);
+    line-height: 1.4;
+  }
+
+  .cour-layer-item strong {
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .cour-layer-item em {
+    margin-top: 0.2rem;
+    font-size: var(--t-micro);
+    line-height: 1.45;
+    color: var(--color-mist);
+  }
+
+  .cour-build-foot {
+    display: none;
+  }
+
+  @container (min-width: 44rem) {
+    .cour-build-foot {
+      position: absolute;
+      right: calc(var(--u) * 4);
+      bottom: calc(var(--v) * 6);
+      display: flex;
+    }
+  }
+
+  /* The chapter's copy block: upper-left corner, as in the reference — the stack
+     owns the centre of the frame and the heading hangs off the corner. */
+  .cour-layer-build .cour-readout {
+    position: absolute;
+    top: calc(var(--v) * 8);
+    left: calc(var(--u) * 4);
+    right: calc(var(--u) * 4);
+    max-width: none;
+  }
+
+  .cour-tech-title {
+    max-width: 11ch;
+    font-size: calc(var(--u) * 5.2);
+    white-space: pre-line;
+  }
+
+  .cour-tech-body {
+    margin-top: calc(var(--v) * 5);
+    max-width: calc(var(--u) * 38);
+    font-size: var(--t-small);
+    line-height: 1.7;
+    color: var(--color-mist);
+  }
+
+  /* ---------------------------------------------------------- KNOW (chapter 5) */
+
+  /*
+   * KNOW is deliberately not symmetric: the heading sits on the lower left and
+   * the rows hang to its right, weighted into the lower half of the frame so the
+   * specimen above them is never covered. This is also the chapter that has to
+   * work without the cinematic — see `.cour-after` on the homepage.
+   */
+  .cour-layer-know {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: calc(var(--v) * 2.4);
+    padding: calc(var(--v) * 40) var(--gutter) calc(var(--v) * 5);
+  }
+
+  @container (min-width: 44rem) {
+    .cour-layer-know {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: calc(var(--u) * 6);
+      padding: calc(var(--v) * 44) calc(var(--u) * 4) calc(var(--v) * 4);
+    }
+  }
+
+  .cour-know-title {
+    font-size: calc(var(--u) * 5.2);
+  }
+
+  @container (min-width: 44rem) {
+    .cour-know-head {
+      flex-shrink: 0;
+      padding-bottom: calc(var(--v) * 0.6);
+    }
+  }
+
+  .cour-know-body {
+    width: 100%;
+  }
+
+  .cour-know-copy {
+    margin-bottom: calc(var(--v) * 1.6);
+    font-size: var(--t-small);
+    line-height: 1.6;
+    color: var(--color-mist);
+  }
+
+  @container (min-width: 44rem) {
+    .cour-know-body {
+      max-width: calc(var(--u) * 46);
+    }
+  }
+
+  .cour-know-note {
+    margin-top: calc(var(--v) * 1.6);
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.14em;
+    color: var(--color-dim);
+  }
+
+  .cour-faq {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .cour-faq-item {
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .cour-faq-trigger {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: none;
+    border: 0;
+    padding: calc(var(--v) * 1.4) 0;
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+
+  .cour-faq-q {
+    max-width: 44ch;
+  }
+
+  /* Plus → minus: two rules, the vertical one collapsing on open. */
+  .cour-faq-mark {
+    position: relative;
+    flex-shrink: 0;
+    width: 0.7rem;
+    height: 0.7rem;
+  }
+
+  .cour-faq-mark::before,
+  .cour-faq-mark::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.7;
+    transition: transform 220ms var(--ease-out);
+  }
+
+  .cour-faq-mark::after {
+    transform: rotate(90deg);
+  }
+
+  .cour-faq-item.is-open .cour-faq-mark::after {
+    transform: rotate(0deg);
+  }
+
+  /*
+   * The panel is a grid row that animates 0fr → 1fr, which is the only
+   * technique that expands to an unknown content height without a JS measure.
+   */
+  .cour-faq-panel {
+    display: grid;
+    grid-template-rows: 1fr;
+    overflow: hidden;
+  }
+
+  .cour-faq-panel[hidden] {
+    display: grid;
+    grid-template-rows: 0fr;
+  }
+
+  .cour-faq-a {
+    min-height: 0;
+    padding-bottom: calc(var(--v) * 1.4);
+    font-size: var(--t-small);
+    line-height: 1.55;
+    color: var(--color-mist);
+  }
+
+  /* ------------------------------------------------------------- product tile */
 
   .cour-tile {
     position: relative;
     display: flex;
-    min-height: 100%;
+    min-height: calc(var(--v) * 52);
     flex-direction: column;
-    border: 1px solid var(--color-line);
-    background: rgb(8 8 10 / 48%);
-    padding: 0.7rem 0.75rem 0.65rem;
-    transition: border-color 180ms var(--ease-out);
+    padding: calc(var(--v) * 2.4) calc(var(--u) * 1.8) calc(var(--v) * 2);
+    transition: background-color 180ms var(--ease-out);
   }
 
-  .cour-tile:hover {
-    border-color: rgb(243 242 238 / 32%);
+  /* One hairline between plates, never a doubled rule at the seam. */
+  .cour-tile + .cour-tile {
+    border-left: 1px solid var(--color-line);
+  }
+
+  .cour-tile:hover,
+  .cour-tile:focus-within {
+    background: rgb(243 242 238 / 4%);
+  }
+
+  .cour-tile-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+
+  .cour-tile-buy {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .cour-tile-idx {
     font-family: var(--font-mono);
-    font-size: 0.56rem;
+    font-size: var(--t-micro);
     letter-spacing: 0.16em;
     color: var(--color-dim);
   }
 
   .cour-tile-name {
     margin-top: 0.25rem;
-    max-width: 14ch;
-    font-size: 0.72rem;
+    max-width: 15ch;
+    font-family: var(--font-mono);
+    font-size: var(--t-small);
     font-weight: 500;
-    line-height: 1.2;
-    letter-spacing: 0.06em;
+    line-height: 1.25;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .cour-tile-price {
+    font-family: var(--font-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.08em;
+    color: var(--color-signal);
   }
 
   .cour-plus {
     display: grid;
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1.1rem;
+    height: 1.1rem;
     place-items: center;
     border: 1px solid var(--color-line);
-    font-size: 0.85rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.78rem;
     line-height: 1;
     color: var(--color-mist);
+    transition:
+      color 160ms var(--ease-out),
+      border-color 160ms var(--ease-out);
+  }
+
+  .cour-plus:hover {
+    color: var(--color-ink);
+    border-color: rgb(243 242 238 / 44%);
   }
 
   .cour-tile-shot {
     display: grid;
-    min-height: 7.5rem;
     flex: 1;
     place-items: center;
-    padding: 0.4rem 0;
+    padding: calc(var(--v) * 1.4) 0;
   }
 
   .cour-tile-shot img {
-    max-height: 9.5rem;
+    max-height: min(calc(var(--v) * 26), calc(var(--u) * 20));
     width: auto;
     object-fit: contain;
-    filter: brightness(1.05) contrast(1.04);
+    filter: brightness(1.06) contrast(1.04) saturate(1.05);
   }
 
   .cour-tile-foot {
     position: relative;
-    min-height: 2.1rem;
+    min-height: calc(var(--v) * 4);
   }
 
   .cour-tile-tags {
     font-family: var(--font-mono);
-    font-size: 0.52rem;
+    font-size: var(--t-micro);
+    line-height: 1.5;
     letter-spacing: 0.12em;
     color: var(--color-dim);
     transition: opacity 160ms var(--ease-out);
@@ -720,7 +1414,7 @@
     display: flex;
     align-items: center;
     font-family: var(--font-mono);
-    font-size: 0.58rem;
+    font-size: var(--t-micro);
     letter-spacing: 0.16em;
     color: var(--color-ink);
     opacity: 0;
@@ -737,183 +1431,233 @@
     opacity: 1;
   }
 
-  .cour-build-art {
-    position: relative;
-    min-height: 42dvh;
+  .cour-tile-page {
+    min-height: 0;
+    border: 1px solid var(--color-line);
+    background: rgb(8 8 10 / 48%);
+    padding: 0.7rem 0.75rem 0.65rem;
   }
 
-  .cour-build-art img {
-    display: block;
-    width: 100%;
-    max-height: 62dvh;
-    object-fit: contain;
-    mix-blend-mode: screen;
-    filter: saturate(1.1) contrast(1.05);
+  .cour-tile-page:hover,
+  .cour-tile-page:focus-within {
+    border-color: rgb(243 242 238 / 32%);
+    background: rgb(8 8 10 / 48%);
   }
 
-  .cour-layer-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    margin-top: 0.8rem;
-  }
-
-  @media (min-width: 768px) {
-    .cour-layer-list {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      width: 13.5rem;
-      translate: 0 -50%;
-      margin-top: 0;
-    }
-  }
-
-  .cour-layer-list li {
+  .cour-tile-page + .cour-tile-page {
     border-left: 1px solid var(--color-line);
-    padding-left: 0.7rem;
   }
 
-  .cour-layer-list span,
-  .cour-layer-list strong,
-  .cour-layer-list em {
-    display: block;
-    font-style: normal;
-  }
-
-  .cour-layer-list span {
+  .cour-tile-stock {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
     font-family: var(--font-mono);
-    font-size: 0.52rem;
-    letter-spacing: 0.16em;
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    color: var(--color-mist);
+  }
+
+  .cour-tile-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: var(--radius-pill);
+    background: currentColor;
+  }
+
+  .cour-tile-stock.is-in {
+    color: rgb(150 200 160 / 85%);
+  }
+
+  .cour-tile-stock.is-low {
+    color: rgb(214 178 110 / 90%);
+  }
+
+  .cour-tile-stock.is-out {
     color: var(--color-dim);
   }
 
-  .cour-layer-list strong {
-    margin-top: 0.15rem;
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
+  .cour-tile.is-out .cour-tile-shot img {
+    opacity: 0.55;
+    filter: grayscale(0.5) brightness(0.95);
   }
 
-  .cour-layer-list em {
-    margin-top: 0.15rem;
-    font-size: 0.62rem;
-    line-height: 1.4;
-    color: var(--color-mist);
-  }
+  /* ----------------------------------------------------- post-stage index */
 
-  .cour-layer-know {
-    display: flex;
-    align-items: flex-end;
-    padding: 5.4rem 1.15rem 1.4rem;
-  }
-
-  @media (min-width: 768px) {
-    .cour-layer-know {
-      align-items: center;
-      padding: 5.4rem 4.6rem 1.8rem 38%;
-    }
-  }
-
-  .cour-faq {
-    margin-top: 1.1rem;
+  /* The stand-alone index of the collection below the cinematic. It keeps the
+     four jackets reachable without scrolling through the whole scene, which is
+     also what makes the homepage usable under reduced motion. */
+  .cour-after {
     border-top: 1px solid var(--color-line);
+    padding: 3.2rem var(--stage-inset) 3.6rem;
   }
 
-  .cour-faq-item {
-    display: block;
-    width: 100%;
-    border-bottom: 1px solid var(--color-line);
-    padding: 0.72rem 0;
-    text-align: left;
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
+  .cour-after-inner {
+    margin: 0 auto;
+    max-width: 76rem;
+    padding-inline: 1.15rem;
   }
 
-  .cour-faq-body {
+  .cour-after-title {
+    font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+  }
+
+  .cour-after-grid {
     display: grid;
-    grid-template-rows: 0fr;
-    padding-top: 0;
-    font-family: var(--font-sans);
-    font-size: 0.78rem;
-    letter-spacing: 0;
-    line-height: 1.5;
-    color: var(--color-mist);
-    opacity: 0;
-    transition:
-      grid-template-rows 240ms var(--ease-out),
-      opacity 240ms var(--ease-out),
-      padding-top 240ms var(--ease-out);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 1.4rem;
   }
 
-  .cour-faq-inner {
-    overflow: hidden;
-    min-height: 0;
-  }
-
-  .cour-faq-body.is-open {
-    grid-template-rows: 1fr;
-    padding-top: 0.55rem;
-    opacity: 1;
-  }
-
-  .cour-tech-title {
-    max-width: 11ch;
+  @media (min-width: 900px) {
+    .cour-after-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
   }
 
   .cour-inspect {
     filter: brightness(1.06) contrast(1.04) saturate(1.06);
   }
 
-  .cour-app > footer {
-    margin-top: 10px;
+  /* ----------------------------------------------------------------- footer */
+
+  .cour-footer {
+    margin: var(--stage-inset);
+    margin-bottom: 0;
     border: 1px solid rgb(243 242 238 / 16%);
     border-radius: var(--radius-frame);
     background: var(--color-void);
   }
 
-  @media (max-width: 767px) {
-    .cour-edge {
-      display: none;
-    }
+  .cour-footer-inner {
+    display: grid;
+    gap: 2rem;
+    padding: 2.6rem 1.3rem 2.2rem;
+  }
 
+  @media (min-width: 900px) {
+    .cour-footer-inner {
+      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      gap: 2.4rem;
+      padding: 3.2rem 3.4rem 2.6rem;
+    }
+  }
+
+  .cour-footer-word {
+    font-size: 1.5rem;
+  }
+
+  .cour-footer-blurb {
+    margin-top: 0.9rem;
+    max-width: 34ch;
+    font-size: 0.68rem;
+    line-height: 1.6;
+    color: var(--color-mist);
+  }
+
+  .cour-footer-coords {
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.18em;
+    color: var(--color-dim);
+  }
+
+  .cour-footer-col {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+  }
+
+  .cour-footer-col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .cour-footer-h {
+    margin-bottom: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    letter-spacing: 0.22em;
+    color: var(--color-dim);
+  }
+
+  .cour-footer-col a {
+    color: var(--color-mist);
+    text-transform: uppercase;
+    transition: color 160ms var(--ease-out);
+  }
+
+  .cour-footer-col a:hover {
+    color: var(--color-ink);
+  }
+
+  .cour-footer-base {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.6rem;
+    border-top: 1px solid var(--color-line);
+    padding: 1rem 1.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.16em;
+    color: var(--color-dim);
+  }
+
+  @media (min-width: 900px) {
+    .cour-footer-base {
+      padding-inline: 3.4rem;
+    }
+  }
+
+  .cour-footer-note {
+    margin-left: auto;
+  }
+
+  /* ------------------------------------------------------------- small screens */
+
+  @container (max-width: 33rem) {
+    /* Below ~530px of stage the two edge statements and the two chips stop
+       being legible; the reference only ever shows them at 793px, so this is a
+       legibility floor rather than a layout decision. */
+    .cour-edge,
     .cour-chip {
       display: none;
     }
 
     .cour-slot {
-      top: 44%;
-      width: min(78vw, 340px);
+      top: 42%;
+      left: 50%;
+      width: calc(var(--u) * 46);
     }
 
-    .cour-jacket {
-      max-height: 46dvh;
-    }
-
-    .cour-index {
-      display: none;
+    .cour-spec-col {
+      max-height: none;
     }
 
     .cour-tile-shot img {
-      max-height: 7.2rem;
+      max-height: calc(var(--v) * 22);
+    }
+
+    .cour-layer-know {
+      justify-content: flex-start;
     }
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cour-slot,
-  .cour-layer,
-  .cour-btn,
-  .cour-faq-body,
-  .cour-loader,
-  .cour-tile,
-  .cour-tile-tags,
-  .cour-tile-shop {
+  /* The scene still composes — opacity and position are content, not decoration —
+     but nothing eases, rotates or animates over time. */
+  .cour-tilt {
+    transform: none !important;
     transition: none;
   }
 
-  .cour-tilt {
-    transform: none !important;
+  .cour-loader {
+    animation: none;
   }
 
   *,

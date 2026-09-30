@@ -1,0 +1,2482 @@
+{
+  "base": "http://127.0.0.1:8080",
+  "generated": "2026-09-30T10:00:43.073Z",
+  "checkpoints": [
+    {
+      "id": "form",
+      "frame": "sec_002",
+      "progress": 0.08,
+      "formatted": "0.0800",
+      "viewport": "ref",
+      "file": "screenshots/stage/01-form-ref.jpg",
+      "chapter": "form",
+      "attr": "0.0800",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 313,
+        "y": 723,
+        "w": 364,
+        "h": 407,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "form-exit",
+      "frame": "sec_004",
+      "progress": 0.173,
+      "formatted": "0.1730",
+      "viewport": "ref",
+      "file": "screenshots/stage/02-form-exit-ref.jpg",
+      "chapter": "form",
+      "attr": "0.1730",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.508",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.492",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 297,
+        "y": 715,
+        "w": 381,
+        "h": 426,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface-enter",
+      "frame": "sec_005",
+      "progress": 0.203,
+      "formatted": "0.2030",
+      "viewport": "ref",
+      "file": "screenshots/stage/03-surface-enter-ref.jpg",
+      "chapter": "surface",
+      "attr": "0.2030",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.114",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.886",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 277,
+        "y": 705,
+        "w": 403,
+        "h": 450,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface",
+      "frame": "sec_008",
+      "progress": 0.33,
+      "formatted": "0.3300",
+      "viewport": "ref",
+      "file": "screenshots/stage/04-surface-ref.jpg",
+      "chapter": "surface",
+      "attr": "0.3300",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 255,
+        "y": 695,
+        "w": 426,
+        "h": 476,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface-exit",
+      "frame": "sec_012",
+      "progress": 0.45,
+      "formatted": "0.4500",
+      "viewport": "ref",
+      "file": "screenshots/stage/05-surface-exit-ref.jpg",
+      "chapter": "surface",
+      "attr": "0.4500",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.563",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.438",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 282,
+        "y": 701,
+        "w": 379,
+        "h": 423,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line-enter",
+      "frame": "sec_014",
+      "progress": 0.48,
+      "formatted": "0.4800",
+      "viewport": "ref",
+      "file": "screenshots/stage/06-line-enter-ref.jpg",
+      "chapter": "line",
+      "attr": "0.4800",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.141",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.859",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 329,
+        "y": 712,
+        "w": 302,
+        "h": 338,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line",
+      "frame": "sec_018",
+      "progress": 0.595,
+      "formatted": "0.5950",
+      "viewport": "ref",
+      "file": "screenshots/stage/07-line-ref.jpg",
+      "chapter": "line",
+      "attr": "0.5950",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 384,
+        "y": 725,
+        "w": 215,
+        "h": 240,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line-exit",
+      "frame": "sec_026",
+      "progress": 0.698,
+      "formatted": "0.6980",
+      "viewport": "ref",
+      "file": "screenshots/stage/08-line-exit-ref.jpg",
+      "chapter": "line",
+      "attr": "0.6980",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.552",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.448",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 396,
+        "y": 731,
+        "w": 198,
+        "h": 222,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "build-enter",
+      "frame": "sec_028",
+      "progress": 0.728,
+      "formatted": "0.7280",
+      "viewport": "ref",
+      "file": "screenshots/stage/09-build-enter-ref.jpg",
+      "chapter": "build",
+      "attr": "0.7280",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.099",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.901",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 401,
+        "y": 738,
+        "w": 189,
+        "h": 211,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "build",
+      "frame": "sec_034",
+      "progress": 0.82,
+      "formatted": "0.8200",
+      "viewport": "ref",
+      "file": "screenshots/stage/10-build-ref.jpg",
+      "chapter": "build",
+      "attr": "0.8200",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 404,
+        "y": 747,
+        "w": 182,
+        "h": 203,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "know-enter",
+      "frame": "sec_040",
+      "progress": 0.905,
+      "formatted": "0.9050",
+      "viewport": "ref",
+      "file": "screenshots/stage/11-know-enter-ref.jpg",
+      "chapter": "build",
+      "attr": "0.9050",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.592",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.408",
+          "visibility": "visible",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 376,
+        "y": 777,
+        "w": 206,
+        "h": 230,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "know",
+      "frame": "sec_046",
+      "progress": 0.978,
+      "formatted": "0.9780",
+      "viewport": "ref",
+      "file": "screenshots/stage/12-know-ref.jpg",
+      "chapter": "know",
+      "attr": "0.9780",
+      "rect": {
+        "x": 35,
+        "y": 677,
+        "w": 794,
+        "h": 567
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 277,
+        "y": 865,
+        "w": 288,
+        "h": 322,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "form",
+      "frame": "sec_002",
+      "progress": 0.08,
+      "formatted": "0.0800",
+      "viewport": "mobile",
+      "file": "screenshots/stage/01-form-mobile.jpg",
+      "chapter": "form",
+      "attr": "0.0800",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 113,
+        "y": 304,
+        "w": 164,
+        "h": 183,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "form-exit",
+      "frame": "sec_004",
+      "progress": 0.173,
+      "formatted": "0.1730",
+      "viewport": "mobile",
+      "file": "screenshots/stage/02-form-exit-mobile.jpg",
+      "chapter": "form",
+      "attr": "0.1730",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.508",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.492",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 106,
+        "y": 300,
+        "w": 171,
+        "h": 192,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface-enter",
+      "frame": "sec_005",
+      "progress": 0.203,
+      "formatted": "0.2030",
+      "viewport": "mobile",
+      "file": "screenshots/stage/03-surface-enter-mobile.jpg",
+      "chapter": "surface",
+      "attr": "0.2030",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.114",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.886",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 97,
+        "y": 296,
+        "w": 181,
+        "h": 203,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface",
+      "frame": "sec_008",
+      "progress": 0.33,
+      "formatted": "0.3300",
+      "viewport": "mobile",
+      "file": "screenshots/stage/04-surface-mobile.jpg",
+      "chapter": "surface",
+      "attr": "0.3300",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 87,
+        "y": 291,
+        "w": 192,
+        "h": 214,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface-exit",
+      "frame": "sec_012",
+      "progress": 0.45,
+      "formatted": "0.4500",
+      "viewport": "mobile",
+      "file": "screenshots/stage/05-surface-exit-mobile.jpg",
+      "chapter": "surface",
+      "attr": "0.4500",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.563",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.438",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 99,
+        "y": 294,
+        "w": 171,
+        "h": 190,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line-enter",
+      "frame": "sec_014",
+      "progress": 0.48,
+      "formatted": "0.4800",
+      "viewport": "mobile",
+      "file": "screenshots/stage/06-line-enter-mobile.jpg",
+      "chapter": "line",
+      "attr": "0.4800",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.141",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.859",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 120,
+        "y": 299,
+        "w": 136,
+        "h": 152,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line",
+      "frame": "sec_018",
+      "progress": 0.595,
+      "formatted": "0.5950",
+      "viewport": "mobile",
+      "file": "screenshots/stage/07-line-mobile.jpg",
+      "chapter": "line",
+      "attr": "0.5950",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 145,
+        "y": 305,
+        "w": 97,
+        "h": 108,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line-exit",
+      "frame": "sec_026",
+      "progress": 0.698,
+      "formatted": "0.6980",
+      "viewport": "mobile",
+      "file": "screenshots/stage/08-line-exit-mobile.jpg",
+      "chapter": "line",
+      "attr": "0.6980",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.552",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.448",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 150,
+        "y": 307,
+        "w": 89,
+        "h": 100,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "build-enter",
+      "frame": "sec_028",
+      "progress": 0.728,
+      "formatted": "0.7280",
+      "viewport": "mobile",
+      "file": "screenshots/stage/09-build-enter-mobile.jpg",
+      "chapter": "build",
+      "attr": "0.7280",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.099",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.901",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 152,
+        "y": 311,
+        "w": 85,
+        "h": 95,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "build",
+      "frame": "sec_034",
+      "progress": 0.82,
+      "formatted": "0.8200",
+      "viewport": "mobile",
+      "file": "screenshots/stage/10-build-mobile.jpg",
+      "chapter": "build",
+      "attr": "0.8200",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 154,
+        "y": 315,
+        "w": 82,
+        "h": 92,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "know-enter",
+      "frame": "sec_040",
+      "progress": 0.905,
+      "formatted": "0.9050",
+      "viewport": "mobile",
+      "file": "screenshots/stage/11-know-enter-mobile.jpg",
+      "chapter": "build",
+      "attr": "0.9050",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.592",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.408",
+          "visibility": "visible",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 141,
+        "y": 328,
+        "w": 93,
+        "h": 103,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "know",
+      "frame": "sec_046",
+      "progress": 0.978,
+      "formatted": "0.9780",
+      "viewport": "mobile",
+      "file": "screenshots/stage/12-know-mobile.jpg",
+      "chapter": "know",
+      "attr": "0.9780",
+      "rect": {
+        "x": 16,
+        "y": 254,
+        "w": 358,
+        "h": 336
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 97,
+        "y": 368,
+        "w": 130,
+        "h": 145,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "form",
+      "frame": "sec_002",
+      "progress": 0.08,
+      "formatted": "0.0800",
+      "viewport": "tablet",
+      "file": "screenshots/stage/01-form-tablet.jpg",
+      "chapter": "form",
+      "attr": "0.0800",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 302,
+        "y": 327,
+        "w": 352,
+        "h": 393,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "form-exit",
+      "frame": "sec_004",
+      "progress": 0.173,
+      "formatted": "0.1730",
+      "viewport": "tablet",
+      "file": "screenshots/stage/02-form-exit-tablet.jpg",
+      "chapter": "form",
+      "attr": "0.1730",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.508",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.492",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 287,
+        "y": 320,
+        "w": 368,
+        "h": 411,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface-enter",
+      "frame": "sec_005",
+      "progress": 0.203,
+      "formatted": "0.2030",
+      "viewport": "tablet",
+      "file": "screenshots/stage/03-surface-enter-tablet.jpg",
+      "chapter": "surface",
+      "attr": "0.2030",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.114",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.886",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 267,
+        "y": 310,
+        "w": 389,
+        "h": 434,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface",
+      "frame": "sec_008",
+      "progress": 0.33,
+      "formatted": "0.3300",
+      "viewport": "tablet",
+      "file": "screenshots/stage/04-surface-tablet.jpg",
+      "chapter": "surface",
+      "attr": "0.3300",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 246,
+        "y": 300,
+        "w": 411,
+        "h": 460,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface-exit",
+      "frame": "sec_012",
+      "progress": 0.45,
+      "formatted": "0.4500",
+      "viewport": "tablet",
+      "file": "screenshots/stage/05-surface-exit-tablet.jpg",
+      "chapter": "surface",
+      "attr": "0.4500",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.563",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.438",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 272,
+        "y": 306,
+        "w": 366,
+        "h": 409,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line-enter",
+      "frame": "sec_014",
+      "progress": 0.48,
+      "formatted": "0.4800",
+      "viewport": "tablet",
+      "file": "screenshots/stage/06-line-enter-tablet.jpg",
+      "chapter": "line",
+      "attr": "0.4800",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.141",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.859",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 317,
+        "y": 317,
+        "w": 292,
+        "h": 326,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line",
+      "frame": "sec_018",
+      "progress": 0.595,
+      "formatted": "0.5950",
+      "viewport": "tablet",
+      "file": "screenshots/stage/07-line-tablet.jpg",
+      "chapter": "line",
+      "attr": "0.5950",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 371,
+        "y": 329,
+        "w": 207,
+        "h": 232,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line-exit",
+      "frame": "sec_026",
+      "progress": 0.698,
+      "formatted": "0.6980",
+      "viewport": "tablet",
+      "file": "screenshots/stage/08-line-exit-tablet.jpg",
+      "chapter": "line",
+      "attr": "0.6980",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.552",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.448",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 382,
+        "y": 335,
+        "w": 192,
+        "h": 214,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "build-enter",
+      "frame": "sec_028",
+      "progress": 0.728,
+      "formatted": "0.7280",
+      "viewport": "tablet",
+      "file": "screenshots/stage/09-build-enter-tablet.jpg",
+      "chapter": "build",
+      "attr": "0.7280",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.099",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.901",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 387,
+        "y": 342,
+        "w": 182,
+        "h": 204,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "build",
+      "frame": "sec_034",
+      "progress": 0.82,
+      "formatted": "0.8200",
+      "viewport": "tablet",
+      "file": "screenshots/stage/10-build-tablet.jpg",
+      "chapter": "build",
+      "attr": "0.8200",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 390,
+        "y": 350,
+        "w": 176,
+        "h": 196,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "know-enter",
+      "frame": "sec_040",
+      "progress": 0.905,
+      "formatted": "0.9050",
+      "viewport": "tablet",
+      "file": "screenshots/stage/11-know-enter-tablet.jpg",
+      "chapter": "build",
+      "attr": "0.9050",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.592",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.408",
+          "visibility": "visible",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 363,
+        "y": 380,
+        "w": 199,
+        "h": 222,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "know",
+      "frame": "sec_046",
+      "progress": 0.978,
+      "formatted": "0.9780",
+      "viewport": "tablet",
+      "file": "screenshots/stage/12-know-tablet.jpg",
+      "chapter": "know",
+      "attr": "0.9780",
+      "rect": {
+        "x": 34,
+        "y": 282,
+        "w": 766,
+        "h": 547
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 267,
+        "y": 464,
+        "w": 278,
+        "h": 310,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "form",
+      "frame": "sec_002",
+      "progress": 0.08,
+      "formatted": "0.0800",
+      "viewport": "desktop",
+      "file": "screenshots/stage/01-form-desktop.jpg",
+      "chapter": "form",
+      "attr": "0.0800",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 550,
+        "y": 110,
+        "w": 522,
+        "h": 584,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "form-exit",
+      "frame": "sec_004",
+      "progress": 0.173,
+      "formatted": "0.1730",
+      "viewport": "desktop",
+      "file": "screenshots/stage/02-form-exit-desktop.jpg",
+      "chapter": "form",
+      "attr": "0.1730",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.508",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.492",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 527,
+        "y": 99,
+        "w": 546,
+        "h": 610,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface-enter",
+      "frame": "sec_005",
+      "progress": 0.203,
+      "formatted": "0.2030",
+      "viewport": "desktop",
+      "file": "screenshots/stage/03-surface-enter-desktop.jpg",
+      "chapter": "surface",
+      "attr": "0.2030",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.114",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.886",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 498,
+        "y": 84,
+        "w": 578,
+        "h": 645,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface",
+      "frame": "sec_008",
+      "progress": 0.33,
+      "formatted": "0.3300",
+      "viewport": "desktop",
+      "file": "screenshots/stage/04-surface-desktop.jpg",
+      "chapter": "surface",
+      "attr": "0.3300",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 466,
+        "y": 70,
+        "w": 611,
+        "h": 683,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "surface-exit",
+      "frame": "sec_012",
+      "progress": 0.45,
+      "formatted": "0.4500",
+      "viewport": "desktop",
+      "file": "screenshots/stage/05-surface-exit-desktop.jpg",
+      "chapter": "surface",
+      "attr": "0.4500",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.563",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.438",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 505,
+        "y": 79,
+        "w": 543,
+        "h": 607,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line-enter",
+      "frame": "sec_014",
+      "progress": 0.48,
+      "formatted": "0.4800",
+      "viewport": "desktop",
+      "file": "screenshots/stage/06-line-enter-desktop.jpg",
+      "chapter": "line",
+      "attr": "0.4800",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.141",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.859",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 572,
+        "y": 94,
+        "w": 434,
+        "h": 484,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line",
+      "frame": "sec_018",
+      "progress": 0.595,
+      "formatted": "0.5950",
+      "viewport": "desktop",
+      "file": "screenshots/stage/07-line-desktop.jpg",
+      "chapter": "line",
+      "attr": "0.5950",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 652,
+        "y": 113,
+        "w": 308,
+        "h": 344,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "line-exit",
+      "frame": "sec_026",
+      "progress": 0.698,
+      "formatted": "0.6980",
+      "viewport": "desktop",
+      "file": "screenshots/stage/08-line-exit-desktop.jpg",
+      "chapter": "line",
+      "attr": "0.6980",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.552",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.448",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 669,
+        "y": 121,
+        "w": 284,
+        "h": 318,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "build-enter",
+      "frame": "sec_028",
+      "progress": 0.728,
+      "formatted": "0.7280",
+      "viewport": "desktop",
+      "file": "screenshots/stage/09-build-enter-desktop.jpg",
+      "chapter": "build",
+      "attr": "0.7280",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.099",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.901",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 675,
+        "y": 131,
+        "w": 271,
+        "h": 303,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "build",
+      "frame": "sec_034",
+      "progress": 0.82,
+      "formatted": "0.8200",
+      "viewport": "desktop",
+      "file": "screenshots/stage/10-build-desktop.jpg",
+      "chapter": "build",
+      "attr": "0.8200",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 680,
+        "y": 145,
+        "w": 261,
+        "h": 292,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "know-enter",
+      "frame": "sec_040",
+      "progress": 0.905,
+      "formatted": "0.9050",
+      "viewport": "desktop",
+      "file": "screenshots/stage/11-know-enter-desktop.jpg",
+      "chapter": "build",
+      "attr": "0.9050",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.592",
+          "visibility": "visible",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "0.408",
+          "visibility": "visible",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 639,
+        "y": 188,
+        "w": 295,
+        "h": 329,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    },
+    {
+      "id": "know",
+      "frame": "sec_046",
+      "progress": 0.978,
+      "formatted": "0.9780",
+      "viewport": "desktop",
+      "file": "screenshots/stage/12-know-desktop.jpg",
+      "chapter": "know",
+      "attr": "0.9780",
+      "rect": {
+        "x": 151,
+        "y": 44,
+        "w": 1138,
+        "h": 812
+      },
+      "layers": {
+        "form": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "surface": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "line": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "build": {
+          "opacity": "0.000",
+          "visibility": "hidden",
+          "interactive": "none"
+        },
+        "know": {
+          "opacity": "1.000",
+          "visibility": "visible",
+          "interactive": "none"
+        }
+      },
+      "specimen": {
+        "x": 497,
+        "y": 314,
+        "w": 413,
+        "h": 461,
+        "opacity": "1.000"
+      },
+      "overflowX": 0
+    }
+  ],
+  "chapters": [
+    {
+      "id": "form",
+      "n": "01",
+      "label": "FORM"
+    },
+    {
+      "id": "surface",
+      "n": "02",
+      "label": "SURFACE"
+    },
+    {
+      "id": "line",
+      "n": "03",
+      "label": "LINE"
+    },
+    {
+      "id": "build",
+      "n": "04",
+      "label": "BUILD"
+    },
+    {
+      "id": "know",
+      "n": "05",
+      "label": "KNOW"
+    }
+  ],
+  "problems": []
+}
