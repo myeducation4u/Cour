@@ -150,6 +150,14 @@ export default defineConfig(({ command, isPreview }) => ({
     host: "0.0.0.0",
     port: 8080,
     strictPort: true,
+    /**
+     * The sandbox live preview reaches this dev server through a proxy on a
+     * host that is not `localhost` (`<port>-<sandbox>.e2b.app`). Vite 6+ answers
+     * such a request with `403 Blocked request` unless the host is allow-listed,
+     * which leaves the preview pane blank. Suffix entries cover the rotating
+     * sandbox and any tunnel domain the platform publishes under.
+     */
+    allowedHosts: [".e2b.app", ".grok-sandbox.com", ".grok.me", ".vercel.app"],
   },
   preview: {
     host: "127.0.0.1",

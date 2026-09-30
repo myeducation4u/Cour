@@ -1,4 +1,5 @@
 import { getSql } from "@/lib/db";
+import { serializeSectionContent } from "@/lib/section-schema";
 
 const globalRef = globalThis as typeof globalThis & {
   __courSeed__?: Promise<void>;
@@ -24,6 +25,14 @@ type ProductSeed = {
   care: string;
   inventory: number[];
 };
+
+/**
+ * The four colourways the COLLECTIONS rail shows, in the reference's order.
+ *
+ * Deliberately not `PRODUCTS.map((p) => p.slug)`: the catalogue also carries the
+ * VOID, which is the stage's own specimen rather than a rail card.
+ */
+const COLLECTION_SLUGS = ["shadow-puffer", "tactical-hooded", "thermal-bomber", "tech-shell"] as const;
 
 const PRODUCTS: ProductSeed[] = [
   {
@@ -52,7 +61,7 @@ const PRODUCTS: ProductSeed[] = [
     name: "SHADOW PUFFER JACKET",
     description: "Acid-lime lacquer puffer. Same cropped architecture as the origin piece.",
     story: "A high-visibility colorway of the COUR puffer block. Same collar, same pocket geometry, same hem draw.",
-    price: 45000,
+    price: 16000,
     featured: true,
     mediaId: "media_shadow",
     image: "/media/shadow-puffer.webp",
@@ -70,7 +79,7 @@ const PRODUCTS: ProductSeed[] = [
     name: "TACTICAL HOODED JACKET",
     description: "Hooded puffer in magenta lacquer, cut for movement with a stowed hood.",
     story: "Adds a structured hood to the COUR block without changing the cropped silhouette.",
-    price: 39500,
+    price: 25000,
     featured: true,
     mediaId: "media_tactical",
     image: "/media/tactical-hooded.webp",
@@ -88,7 +97,7 @@ const PRODUCTS: ProductSeed[] = [
     name: "THERMAL BOMBER JACKET",
     description: "Coral bomber-puffer hybrid. Thermal insulation with a tighter hem.",
     story: "A slightly more compact COUR block. Same material language, bomber proportion.",
-    price: 35000,
+    price: 37400,
     featured: true,
     mediaId: "media_thermal",
     image: "/media/thermal-bomber.webp",
@@ -106,7 +115,7 @@ const PRODUCTS: ProductSeed[] = [
     name: "TECH SHELL JACKET",
     description: "Cobalt technical shell with angular panels and a structured collar.",
     story: "The most weather-oriented COUR block. Harder panel lines, same inspection lighting.",
-    price: 52000,
+    price: 30000,
     featured: true,
     mediaId: "media_shell",
     image: "/media/tech-shell.webp",
@@ -163,16 +172,27 @@ async function seedInner() {
     `;
   }
 
-  const heroContent = JSON.stringify({
-    leftTitle: "ENGINEERED FOR MOTION.",
-    leftBody: "BUILT TO ENDURE.",
-    rightTitle: "DESIGNED FOR THE UNKNOWN.",
-    rightBody: "READY FOR ANYTHING.",
-    ticker: "WEATHER-RESISTANT. THERMAL INSULATION. OVERSIZED FIT. LIMITED QUANTITY.",
-    established: "EST. 2022",
-    establishedNote: "BUILT FOR CONTINUAL WEATHER, MOTION AND FOCUS IN USE.",
-  });
-  const detailsContent = JSON.stringify({
+  // Every seeded section goes through the same schema the admin editor writes
+  // through, so the initial content can never be a shape the write path would
+  // reject. A schema change that would break the seed breaks the seed loudly.
+  const heroContent = serializeSectionContent(
+    "hero",
+    JSON.stringify({
+      leftTitle: "ENGINEERED FOR MOTION.",
+      leftBody: "BUILT TO ENDURE.",
+      rightTitle: "DESIGNED FOR THE UNKNOWN.",
+      rightBody: "READY FOR ANYTHING.",
+      ticker: "WEATHER-RESISTANT. THERMAL INSULATION. OVERSIZED FIT. LIMITED QUANTITY.",
+      established: "EST. 2022",
+      establishedNote: "BUILT FOR CONTINUAL WEATHER, MOTION AND FOCUS IN USE.",
+      shippingLabel: "WORLDWIDE SHIPPING",
+      shippingDetail: "FAST & SECURE DELIVERY",
+      ctaLabel: "SHOP NOW",
+    }),
+  );
+  const detailsContent = serializeSectionContent(
+    "details",
+    JSON.stringify({
     specs: [
       {
         id: "01",
@@ -200,8 +220,11 @@ async function seedInner() {
         body: "Relaxed silhouette for movement, layering and everyday comfort.",
       },
     ],
-  });
-  const techContent = JSON.stringify({
+    }),
+  );
+  const techContent = serializeSectionContent(
+    "construction",
+    JSON.stringify({
     layers: [
       {
         id: "01",
@@ -224,7 +247,16 @@ async function seedInner() {
         body: "Soft inner layer for motion without surface friction.",
       },
     ],
-  });
+    }),
+  );
+
+  // The rail carries the four colourways the reference shows, in its order —
+  // not every product in the catalogue.
+  const collectionsContent = serializeSectionContent(
+    "collections",
+    JSON.stringify({ productSlugs: COLLECTION_SLUGS }),
+  );
+  const knowContent = serializeSectionContent("know", "{}");
 
   await sql`
     insert into homepage_sections (id, section_key, title, eyebrow, body, cta_label, cta_href, enabled, sort_order, content)
@@ -235,11 +267,11 @@ async function seedInner() {
         'EXPLORE THE JACKET', '/product/void-puffer', true, 1, ${detailsContent}),
       ('sec_collections', 'collections', 'COLLECTIONS.', null,
         'Technical jackets for changing weather, movement and everyday use.',
-        'VIEW ALL JACKETS', '/shop', true, 2, '{}'),
+        'VIEW ALL JACKETS', '/shop', true, 2, ${collectionsContent}),
       ('sec_tech', 'construction', ${"TECHNOLOGY\nENGINEERED\nTO ENDURE"}, null,
         'Every detail has a purpose. From the protective outer shell to the insulation inside, the jacket is designed to perform without compromising its form.',
         null, null, true, 3, ${techContent}),
-      ('sec_know', 'know', 'NEED TO KNOW.', null, null, null, null, true, 4, '{}')
+      ('sec_know', 'know', 'NEED TO KNOW.', null, null, null, null, true, 4, ${knowContent})
   `;
 
   await sql`
@@ -351,76 +383,10 @@ async function seedInner() {
 
 export async function ensureSeed() {
   if (!globalRef.__courSeed__) {
-    globalRef.__courSeed__ = seedInner()
-      .then(() => patchCopy())
-      .catch((err) => {
-        globalRef.__courSeed__ = undefined;
-        throw err;
-      });
+    globalRef.__courSeed__ = seedInner().catch((err) => {
+      globalRef.__courSeed__ = undefined;
+      throw err;
+    });
   }
   await globalRef.__courSeed__;
-}
-
-async function patchCopy() {
-  const sql = await getSql();
-  await sql`
-    update homepage_sections
-    set content = replace(content, '"EST. 2020"', '"EST. 2022"')
-    where section_key = 'hero' and content like '%EST. 2020%'
-  `;
-  await sql`
-    update homepage_sections
-    set title = ${"TECHNOLOGY\nENGINEERED\nTO ENDURE"}
-    where section_key = 'construction' and title = 'TECHNOLOGY ENGINEERED TO ENDURE'
-  `;
-  await sql`
-    update homepage_sections
-    set body = null
-    where section_key = 'hero' and body like '{%'
-  `;
-  const tech = JSON.stringify({
-    layers: [
-      {
-        id: "01",
-        title: "OUTER SHELL",
-        body: "Durable outer layer that repels water and protects against wind and rain.",
-      },
-      {
-        id: "02",
-        title: "RIPSTOP PROTECTION",
-        body: "Reinforced ripstop structure that resists tear-through without adding bulk.",
-      },
-      {
-        id: "03",
-        title: "BREATHABLE MEMBRANE",
-        body: "Moisture-managing membrane that keeps the silhouette clean in changing weather.",
-      },
-      {
-        id: "04",
-        title: "COMFORT LINING",
-        body: "Soft inner layer for motion without surface friction.",
-      },
-    ],
-  });
-  await sql`
-    update homepage_sections
-    set content = ${tech}
-    where section_key = 'construction' and content like '%WEATHER BARRIER%'
-  `;
-  await sql`
-    update media
-    set url = replace(url, '.jpg', '.webp')
-    where url in (
-      '/media/void-puffer.jpg',
-      '/media/shadow-puffer.jpg',
-      '/media/tactical-hooded.jpg',
-      '/media/thermal-bomber.jpg',
-      '/media/tech-shell.jpg'
-    )
-  `;
-  await sql`
-    update faqs
-    set answer = replace(answer, 'weather-leave membrane', 'weather membrane')
-    where answer like '%weather-leave%'
-  `;
 }

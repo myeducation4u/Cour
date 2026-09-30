@@ -1,22 +1,42 @@
-import { Link } from "@tanstack/react-router";
-import { useCallback, useLayoutEffect, useState, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { ProductTile } from "@/components/site/product-card";
 import { SiteNav } from "@/components/site/nav";
 import { SiteFooter } from "@/components/site/footer";
 import { Hud } from "@/components/site/hud";
-import { SpecIcon, SPEC_ICON } from "@/components/site/spec-icons";
-import { DecodeText } from "@/components/site/decode-text";
-import { scrollPinTo, useStagePointer, useStageProgress } from "@/components/home/use-stage";
+import { BrandWord } from "@/components/site/brand-mark";
+import {
+  BuildLayer,
+  FormLayer,
+  KnowLayer,
+  LineLayer,
+  SurfaceLayer,
+} from "@/components/home/sections";
+import { scrollPinTo, useStagePointer, useStageProgress, useStageReadiness } from "@/components/home/use-stage";
+import { CHAPTERS, chapterStop, type ChapterId } from "@/lib/stage/timeline";
 import type { HomeSection, ProductCard, Storefront } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-const CHAPTERS = [
-  { id: "form", n: "01", label: "FORM", at: 0 },
-  { id: "surface", n: "02", label: "SURFACE", at: 0.2 },
-  { id: "line", n: "03", label: "LINE", at: 0.42 },
-  { id: "build", n: "04", label: "BUILD", at: 0.64 },
-  { id: "know", n: "05", label: "KNOW", at: 0.84 },
-] as const;
+/**
+ * The COUR homepage: one immersive stage with five chapters.
+ *
+ * Structural contract:
+ *
+ *   .cour-pin            — the sticky track; owns the scrollable height
+ *     .cour-stage        — the rounded viewport, sticky at the top
+ *       .cour-grid       — the technical grid, clipped by the stage radius
+ *       .cour-jacket     — the specimen, driven by `--jx/--jy/--js/--jo`
+ *       .cour-layer-*    — the five chapter bodies, driven by `--<id>-o/-y/-z/-v/-p`
+ *     [the layer bodies]
+ *     .cour-track        — the spacer that gives the pin its scroll range
+ *   footer               — OUTSIDE the pin: ordinary page content, never
+ *                          stretched by, or stretching, the timeline
+ *
+ * The footer deliberately sits outside the sticky track. It used to be nested
+ * with the stage, which both made the document height depend on footer copy and
+ * left the footer subject to the stage's own scroll styling.
+ */
+
+const DEFAULT_LINE_ORDER = ["shadow-puffer", "tactical-hooded", "thermal-bomber", "tech-shell"];
 
 function section(store: Storefront, key: string): HomeSection | undefined {
   return store.sections.find((s) => s.sectionKey === key);
@@ -25,87 +45,89 @@ function section(store: Storefront, key: string): HomeSection | undefined {
 export function HomeExperience({ store }: { store: Storefront }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const tiltRef = useRef<HTMLDivElement>(null);
-  const [chapter, setChapter] = useState("form");
-  const [ready, setReady] = useState(false);
+  const [chapter, setChapter] = useState<ChapterId>("form");
   const [openFaq, setOpenFaq] = useState<string | null>(store.faqs[0]?.id ?? null);
-  const onChapter = useCallback((id: string) => setChapter(id), []);
-  useStageProgress(stageRef, onChapter);
-  useStagePointer(stageRef, tiltRef);
 
   const hero = section(store, "hero");
   const details = section(store, "details");
   const collections = section(store, "collections");
   const tech = section(store, "construction");
   const know = section(store, "know");
-  const specs = details?.content.specs ?? [];
-  const layers = tech?.content.layers ?? [];
-  const lineOrder = ["shadow-puffer", "tactical-hooded", "thermal-bomber", "tech-shell"];
-  const featured = lineOrder
-    .map((slug) => store.products.find((p) => p.slug === slug))
-    .filter((p): p is ProductCard => Boolean(p));
-  const heroImg =
-    store.products.find((p) => p.slug === "void-puffer")?.image ?? "/media/void-puffer.webp";
-  const content = hero?.content ?? {};
 
-  useLayoutEffect(() => {
-    let cancelled = false;
-    const mark = () => {
-      if (!cancelled) setReady(true);
-    };
-    const img = new Image();
-    img.src = heroImg;
-    const fallback = window.setTimeout(mark, 2800);
-    const done = () => {
-      window.clearTimeout(fallback);
-      mark();
-    };
-    if (img.complete && img.naturalWidth > 0) {
-      done();
-      return () => {
-        cancelled = true;
-        window.clearTimeout(fallback);
-      };
-    }
-    void img.decode?.().then(done).catch(done);
-    img.onload = done;
-    img.onerror = done;
-    return () => {
-      cancelled = true;
-      window.clearTimeout(fallback);
-    };
-  }, [heroImg]);
+  const order = collections?.content.productSlugs?.length
+    ? collections.content.productSlugs
+    : DEFAULT_LINE_ORDER;
+  const featured = useMemo(
+    () =>
+      order
+        .map((slug) => store.products.find((p) => p.slug === slug))
+        .filter((p): p is ProductCard => Boolean(p)),
+    [order, store.products],
+  );
 
-  function go(at: number) {
-    const pin = stageRef.current?.closest(".cour-pin");
+  const heroImg = useMemo(
+    () => store.products.find((p) => p.slug === "void-puffer")?.image ?? "/media/void-puffer.webp",
+    [store.products],
+  );
+
+  // The only assets the first visible frame needs. Everything else (the four
+  // product plates, the material stack) is lazy — the loader must not wait on
+  // images the visitor cannot see yet.
+  const criticalAssets = useMemo(() => [heroImg], [heroImg]);
+  const { ready, show: showLoader } = useStageReadiness(criticalAssets);
+
+  const onChapter = useCallback((id: ChapterId) => setChapter(id), []);
+  // The stage does not animate until the critical frame is decoded, so the
+  // first painted frame is the composed FORM chapter rather than a half-arrived
+  // one.
+  useStageProgress(stageRef, onChapter, ready);
+  useStagePointer(stageRef, tiltRef, ready);
+
+  const go = useCallback((id: ChapterId) => {
+    const stage = stageRef.current;
+    const pin = stage?.closest(".cour-pin");
     if (!(pin instanceof HTMLElement)) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    scrollPinTo(pin, at, !reduced);
-  }
+    scrollPinTo(pin, chapterStop(id), !reduced);
+  }, []);
+
+  const toggleFaq = useCallback((id: string) => {
+    setOpenFaq((current) => (current === id ? null : id));
+  }, []);
 
   return (
-    <div className="cour-app" data-ready={ready ? "true" : "false"} data-stage-ready={ready ? "true" : "false"}>
+    <div className="cour-app">
       <div className="cour-pin">
+        {/* The sticky window. The stage is a fixed-aspect band centred inside it,
+            which is what the reference frame shows: an inset rounded frame with
+            the page's black around it, not a full-bleed viewport. */}
+        <div className="cour-viewport">
         <div
           ref={stageRef}
           className="cour-stage"
-          data-act={chapter}
-          aria-busy={!ready}
+          data-stage-ready={ready ? "true" : "false"}
+          data-stage-progress="0.0000"
+          data-stage-chapter="form"
+          data-act="form"
+          aria-busy={ready ? undefined : true}
         >
           <div className="cour-grid" />
-          <div className="cour-grid-hot" />
+          <div className="cour-stage-frame" aria-hidden="true" />
           <Hud />
-          <Loader hide={ready} />
-          <SiteNav items={store.navigation} overlay variant="hero" />
+          {showLoader && !ready ? <Loader /> : null}
 
-          <ol className="cour-index">
-            {CHAPTERS.map((c) => (
-              <li key={c.id}>
+          <SiteNav items={store.navigation} collections={store.collections} overlay variant="hero" />
+
+          <ol className="cour-index" aria-label="Chapters">
+            {CHAPTERS.map((entry) => (
+              <li key={entry.id}>
                 <button
                   type="button"
-                  className={cn("cour-index-btn", chapter === c.id && "is-on")}
-                  onClick={() => go(c.at)}
+                  className={cn("cour-index-btn", chapter === entry.id && "is-on")}
+                  aria-current={chapter === entry.id ? "true" : undefined}
+                  onClick={() => go(entry.id)}
                 >
-                  {c.n} {c.label}
+                  <span className="cour-index-n">{entry.n}</span> {entry.label}
                 </button>
               </li>
             ))}
@@ -113,267 +135,83 @@ export function HomeExperience({ store }: { store: Storefront }) {
 
           <div className="cour-slot">
             <div ref={tiltRef} className="cour-tilt">
+              {/* The specimen. `data-specimen` is the stable hook the visual
+                  regression suite measures against. */}
               <img
+                data-specimen="hero"
                 src={heroImg}
-                alt="COUR Void Puffer"
-                width={1200}
-                height={1600}
+                alt="COUR Void Puffer: dark iridescent cropped technical jacket"
+                width={900}
+                height={1051}
                 fetchPriority="high"
-                decoding="async"
+                decoding="sync"
                 className="cour-jacket"
-                onLoad={() => setReady(true)}
               />
             </div>
           </div>
 
-          <FormLayer hero={hero} content={content} active={chapter === "form"} />
-          <SurfaceLayer section={details} specs={specs} />
-          <LineLayer section={collections} products={featured} />
-          <BuildLayer section={tech} layers={layers} />
+          <FormLayer hero={hero} active={chapter === "form"} />
+          <SurfaceLayer
+            section={details}
+            specs={details?.content.specs ?? []}
+            active={chapter === "surface"}
+          />
+          <LineLayer section={collections} products={featured} active={chapter === "line"} />
+          <BuildLayer
+            section={tech}
+            layers={tech?.content.layers ?? []}
+            active={chapter === "build"}
+          />
           <KnowLayer
             section={know}
             faqs={store.faqs}
             openFaq={openFaq}
-            setOpenFaq={setOpenFaq}
+            onToggle={toggleFaq}
+            currency={store.settings.currency}
+            active={chapter === "know"}
           />
+
           <div className="cour-rail" aria-hidden="true">
             <span className="cour-rail-thumb" />
           </div>
         </div>
+        </div>
+
         <div className="cour-track" aria-hidden="true" />
       </div>
+
+      {/* A plain index of the collection follows the stage: it makes the four
+          jackets reachable without scrolling through the cinematic, which is
+          also what keeps the page usable when motion is reduced. */}
+      <section className="cour-after" aria-label="Collection">
+        <div className="cour-after-inner">
+          <h2 className="cour-display cour-after-title">{collections?.title ?? "COLLECTIONS."}</h2>
+          <div className="cour-after-grid">
+            {featured.map((product, index) => (
+              <ProductTile key={product.id} product={product} index={index} variant="page" />
+            ))}
+          </div>
+        </div>
+      </section>
+
       <SiteFooter settings={store.settings} items={store.navigation} />
     </div>
   );
 }
 
-function Loader({ hide }: { hide: boolean }) {
+/**
+ * The loader shown before the critical frame is decoded.
+ *
+ * It appears only when readiness is still pending after a short delay, and it
+ * always reports the same wordmark the stage opens with — the visual match to
+ * the reference is limited to what is observable, so this stays a static
+ * mark-and-caption rather than an invented sequence.
+ */
+function Loader() {
   return (
-    <div className={cn("cour-loader", hide && "is-gone")} aria-hidden={hide} role="status">
-      <svg viewBox="0 0 32 32" className="h-10 w-10 text-ink" aria-hidden="true">
-        <rect x="1.2" y="1.2" width="29.6" height="29.6" fill="none" stroke="currentColor" strokeWidth="2.2" />
-        <path d="M23.5 8.2 H11.2 V23.8 H23.5" fill="none" stroke="currentColor" strokeWidth="4.4" />
-      </svg>
-      <p className="cour-wordmark mt-3">COUR</p>
-      <p className="mt-4 font-mono text-[0.62rem] tracking-[0.22em] text-mist">PLEASE WAIT</p>
+    <div className="cour-loader" role="status" aria-live="polite">
+      <BrandWord className="cour-loader-word" />
+      <p className="cour-loader-note">PREPARING INSPECTION</p>
     </div>
-  );
-}
-
-function FormLayer({
-  hero,
-  content,
-  active,
-}: {
-  hero?: HomeSection;
-  content: HomeSection["content"];
-  active: boolean;
-}) {
-  return (
-    <div className="cour-layer cour-layer-form" style={{ opacity: "var(--form-o)" }}>
-      <p className="cour-edge cour-edge-l">
-        <DecodeText text={content.leftTitle ?? "ENGINEERED FOR MOTION."} active={active} />
-        <br />
-        <DecodeText text={content.leftBody ?? "BUILT TO ENDURE."} active={active} />
-      </p>
-      <p className="cour-edge cour-edge-r">
-        <DecodeText text={content.rightTitle ?? "DESIGNED FOR THE UNKNOWN."} active={active} />
-        <br />
-        <DecodeText text={content.rightBody ?? "READY FOR ANYTHING."} active={active} />
-      </p>
-      <aside className="cour-chip cour-chip-l">
-        <ClockIcon />
-        <span>
-          <strong>{content.established ?? "EST. 2022"} COUR.</strong>
-          <em>{content.establishedNote ?? "BUILT FOR CONTINUAL WEATHER, MOTION AND FOCUS IN USE."}</em>
-        </span>
-      </aside>
-      <aside className="cour-chip cour-chip-r">
-        <PinIcon />
-        <span>
-          <strong>WORLDWIDE SHIPPING</strong>
-          <em>SECURE GLOBAL DELIVERY</em>
-        </span>
-      </aside>
-      <div className="cour-hero-foot">
-        <p className="cour-ticker">
-          <DecodeText
-            text={
-              content.ticker ??
-              "WEATHER-RESISTANT. THERMAL INSULATION. OVERSIZED FIT. LIMITED QUANTITY."
-            }
-            active={active}
-          />
-        </p>
-        <Link to="/shop" className="cour-btn cour-btn-ghost">
-          {hero?.ctaLabel ?? "SHOP NOW"} <span aria-hidden="true">→</span>
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-function SurfaceLayer({
-  section,
-  specs,
-}: {
-  section?: HomeSection;
-  specs: Array<{ id: string; title: string; body: string }>;
-}) {
-  return (
-    <div className="cour-layer cour-layer-split cour-layer-surf" style={{ opacity: "var(--surf-o)" }}>
-      <div className="cour-readout">
-        <h2 className="cour-display text-[clamp(2rem,5vw,3.6rem)]">
-          {section?.title ?? "DETAILS MATTER."}
-        </h2>
-        <p className="mt-4 max-w-[34ch] text-[0.82rem] leading-relaxed text-mist">{section?.body}</p>
-        <Link to="/product/$slug" params={{ slug: "void-puffer" }} className="cour-btn cour-btn-ghost mt-6">
-          {section?.ctaLabel ?? "EXPLORE THE JACKET"} <span aria-hidden="true">→</span>
-        </Link>
-      </div>
-      <ul className="cour-spec-col">
-        {specs.map((spec, i) => (
-          <li key={spec.id} className="cour-spec">
-            <div className="flex items-start justify-between gap-3">
-              <p className="font-mono text-[0.58rem] tracking-[0.16em] text-dim">{spec.id}</p>
-              <SpecIcon name={SPEC_ICON[i] ?? "fit"} />
-            </div>
-            <p className="mt-2 text-[0.72rem] tracking-[0.08em]">{spec.title}</p>
-            <p className="mt-1 text-[0.7rem] leading-relaxed text-mist">{spec.body}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function LineLayer({
-  section,
-  products,
-}: {
-  section?: HomeSection;
-  products: ProductCard[];
-}) {
-  return (
-    <div className="cour-layer cour-layer-line" style={{ opacity: "var(--line-o)" }}>
-      <div className="cour-line-head">
-        <h2 className="cour-display text-[clamp(2rem,5vw,3.6rem)]">
-          {section?.title ?? "COLLECTIONS."}
-        </h2>
-        <p className="max-w-sm text-[0.78rem] leading-relaxed text-mist">{section?.body}</p>
-      </div>
-      <div className="cour-film">
-        {products.map((p, i) => (
-          <ProductTile key={p.id} product={p} index={i} />
-        ))}
-      </div>
-      <div className="flex justify-center pb-5">
-        <Link to="/shop" className="cour-btn cour-btn-ghost">
-          {section?.ctaLabel ?? "VIEW ALL JACKETS"} <span aria-hidden="true">→</span>
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-function BuildLayer({
-  section,
-  layers,
-}: {
-  section?: HomeSection;
-  layers: Array<{ id: string; title: string; body: string }>;
-}) {
-  return (
-    <div className="cour-layer cour-layer-split cour-layer-build" style={{ opacity: "var(--build-o)" }}>
-      <div className="cour-readout">
-        <h2 className="cour-display cour-tech-title whitespace-pre-line text-[clamp(1.7rem,4.2vw,3rem)]">
-          {section?.title ?? "TECHNOLOGY\nENGINEERED\nTO ENDURE"}
-        </h2>
-        <p className="mt-5 max-w-[40ch] text-[0.8rem] leading-relaxed text-mist">{section?.body}</p>
-      </div>
-      <div className="cour-build-art">
-        <img
-          src="/media/construction.jpg"
-          alt="Exploded COUR material layers"
-          width={1400}
-          height={1400}
-          loading="lazy"
-          decoding="async"
-        />
-        <ul className="cour-layer-list">
-          {layers.map((layer) => (
-            <li key={layer.id}>
-              <span>{layer.id}</span>
-              <strong>{layer.title}</strong>
-              <em>{layer.body}</em>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}
-
-function KnowLayer({
-  section,
-  faqs,
-  openFaq,
-  setOpenFaq,
-}: {
-  section?: HomeSection;
-  faqs: Storefront["faqs"];
-  openFaq: string | null;
-  setOpenFaq: (id: string | null) => void;
-}) {
-  return (
-    <div className="cour-layer cour-layer-know" style={{ opacity: "var(--know-o)" }}>
-      <div className="cour-readout ml-auto w-full max-w-lg">
-        <h2 className="cour-display text-[clamp(1.8rem,4.6vw,3.2rem)]">
-          {section?.title ?? "NEED TO KNOW."}
-        </h2>
-        <div className="cour-faq">
-          {faqs.map((faq) => {
-            const open = openFaq === faq.id;
-            return (
-              <button
-                key={faq.id}
-                type="button"
-                aria-expanded={open}
-                onClick={() => setOpenFaq(open ? null : faq.id)}
-                className="cour-faq-item"
-              >
-                <span className="flex items-center justify-between gap-4">
-                  {faq.question}
-                  <span className="text-dim" aria-hidden="true">
-                    {open ? "–" : "+"}
-                  </span>
-                </span>
-                <span className={cn("cour-faq-body", open && "is-open")}>
-                  <span className="cour-faq-inner">{faq.answer}</span>
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ClockIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-8 w-8 shrink-0 text-mist" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true">
-      <circle cx="12" cy="12" r="8" />
-      <path d="M12 8v4l3 2" />
-    </svg>
-  );
-}
-
-function PinIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-8 w-8 shrink-0 text-mist" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden="true">
-      <path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z" />
-      <circle cx="12" cy="11" r="2" />
-    </svg>
   );
 }

@@ -1,84 +1,193 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getSql, withTransaction } from "@/lib/db";
+import { getSql, withTransaction, type Sql } from "@/lib/db";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { ensureSeed } from "./seed";
 import { asJsonRow } from "@/lib/types";
 import type { AddressCard, OrderSummary, WishlistCard } from "@/lib/types";
 import { uid } from "@/lib/utils";
-import { clampQty, isShippingCountry, isValidEmail, shippingCents } from "@/lib/commerce-rules";
+import {
+  clampQty,
+  isShippingCountry,
+  isValidEmail,
+  shippingCents,
+  type ShippingCountry,
+} from "@/lib/commerce-rules";
+
+/**
+ * Commerce server functions: cart-free checkout, order history, addresses and
+ * the wishlist.
+ *
+ * Everything reachable here is treated as hostile input. Prices, shipping and
+ * stock are always recomputed from the database inside the checkout
+ * transaction — the client's numbers are a preview and nothing else.
+ */
+
+/** Input shapes are validated with plain predicates: this module has no zod
+ * dependency in its import graph, and every field is a scalar or a small array
+ * of scalars, so an explicit guard is both shorter and easier to audit than a
+ * schema object. */
+
+class InputError extends Error {
+  readonly status = 400;
+  constructor(message: string) {
+    super(message);
+    this.name = "InputError";
+  }
+}
+
+class ConflictError extends Error {
+  readonly status = 409;
+  constructor(message: string) {
+    super(message);
+    this.name = "ConflictError";
+  }
+}
+
+/**
+ * A validator that keeps the client-visible input type while still refusing a
+ * non-object payload at runtime. The TS type is a convenience for the caller;
+ * this check is the boundary.
+ */
+function requireShape<T>(label: string) {
+  return (input: T): T => {
+    if (!input || typeof input !== "object") throw new InputError(`${label} is required.`);
+    return input;
+  };
+}
+
+function str(value: unknown, max: number): string {
+  return typeof value === "string" ? value.trim().slice(0, max) : "";
+}
+
+function optionalStr(value: unknown, max: number): string | null {
+  const s = str(value, max);
+  return s.length ? s : null;
+}
+
+/** A deliberate, pre-auth failure with a message safe to show a visitor. */
+function fail(message: string, status = 400): Error {
+  const err = new Error(message);
+  (err as Error & { status?: number }).status = status;
+  return err;
+}
+
+type OrderRow = {
+  id: string;
+  status: string;
+  email: string | null;
+  totalCents: number;
+  shippingCents: number;
+  createdAt: string;
+  shippingName: string | null;
+  shippingLine1: string | null;
+  shippingCity: string | null;
+  shippingRegion: string | null;
+  shippingPostal: string | null;
+  shippingCountry: string | null;
+  items: {
+    id: string;
+    name: string;
+    size: string;
+    unitCents: number;
+    quantity: number;
+  }[];
+};
+
+function orderFromRow(row: object, items: unknown[]): OrderRow {
+  const o = asJsonRow(row);
+  return {
+    id: String(o.id ?? ""),
+    status: String(o.status ?? ""),
+    email: o.email == null ? null : String(o.email),
+    totalCents: Number(o.total_cents ?? 0),
+    shippingCents: Number(o.shipping_cents ?? 0),
+    createdAt: String(o.created_at ?? ""),
+    shippingName: o.shipping_name == null ? null : String(o.shipping_name),
+    shippingLine1: o.shipping_line1 == null ? null : String(o.shipping_line1),
+    shippingCity: o.shipping_city == null ? null : String(o.shipping_city),
+    shippingRegion: o.shipping_region == null ? null : String(o.shipping_region),
+    shippingPostal: o.shipping_postal == null ? null : String(o.shipping_postal),
+    shippingCountry: o.shipping_country == null ? null : String(o.shipping_country),
+    items: items.map((it) => {
+      const item = asJsonRow(it as object);
+      return {
+        id: String(item.id ?? ""),
+        name: String(item.name ?? ""),
+        size: String(item.size ?? ""),
+        unitCents: Number(item.unit_cents ?? 0),
+        quantity: Number(item.quantity ?? 0),
+      };
+    }),
+  };
+}
+
+/** Order summary for lists — no address, which the account view does not show. */
+function toSummary(order: OrderRow): OrderSummary {
+  return {
+    id: order.id,
+    status: order.status,
+    email: order.email,
+    totalCents: order.totalCents,
+    shippingCents: order.shippingCents,
+    createdAt: order.createdAt,
+    items: order.items,
+  };
+}
+
+/**
+ * Load orders + their items in two queries rather than one per order.
+ * The previous shape issued an `order_items` read inside the loop, which is an
+ * N+1 that grows with order history length.
+ */
+async function loadOrders(
+  sql: Sql,
+  orders: object[],
+): Promise<OrderRow[]> {
+  if (!orders.length) return [];
+  const ids = orders.map((o) => String(asJsonRow(o).id ?? ""));
+  const itemRows = await sql`
+    select * from order_items where order_id = any(${ids}::text[]) order by order_id, id
+  `;
+  const byOrder = new Map<string, object[]>();
+  for (const row of itemRows) {
+    const orderId = String(asJsonRow(row).order_id ?? "");
+    const bucket = byOrder.get(orderId);
+    if (bucket) bucket.push(row);
+    else byOrder.set(orderId, [row]);
+  }
+  return orders.map((o) => {
+    const id = String(asJsonRow(o).id ?? "");
+    return orderFromRow(o, byOrder.get(id) ?? []);
+  });
+}
 
 export const listMyOrders = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }): Promise<OrderSummary[]> => {
     await ensureSeed();
     const sql = await getSql();
-    const orders = await sql`
+    const rows = await sql`
       select * from orders where user_id = ${context.userId} order by created_at desc
     `;
-    const result: OrderSummary[] = [];
-    for (const o of orders) {
-      const order = asJsonRow(o);
-      const items = await sql`
-        select * from order_items where order_id = ${String(order.id)}
-      `;
-      result.push({
-        id: String(order.id ?? ""),
-        status: String(order.status ?? ""),
-        email: order.email == null ? null : String(order.email),
-        totalCents: Number(order.total_cents ?? 0),
-        shippingCents: Number(order.shipping_cents ?? 0),
-        createdAt: String(order.created_at ?? ""),
-        items: items.map((it) => {
-          const item = asJsonRow(it);
-          return {
-            id: String(item.id ?? ""),
-            name: String(item.name ?? ""),
-            size: String(item.size ?? ""),
-            unitCents: Number(item.unit_cents ?? 0),
-            quantity: Number(item.quantity ?? 0),
-          };
-        }),
-      });
-    }
-    return result;
+    return (await loadOrders(sql, rows)).map(toSummary);
   });
 
 export const getMyOrder = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
-  .validator((id: string) => id)
+  .validator((id: string) => str(id, 64))
   .handler(async ({ context, data: id }) => {
+    if (!id) return null;
     const sql = await getSql();
-    const orders = await sql`
+    // Ownership is part of the predicate, not a check that follows the read.
+    const rows = await sql`
       select * from orders where id = ${id} and user_id = ${context.userId} limit 1
     `;
-    const o = orders[0];
-    if (!o) return null;
-    const order = asJsonRow(o);
-    const items = await sql`
-      select * from order_items where order_id = ${id}
-    `;
-    return {
-      id: String(order.id ?? ""),
-      status: String(order.status ?? ""),
-      email: order.email == null ? null : String(order.email),
-      totalCents: Number(order.total_cents ?? 0),
-      shippingCents: Number(order.shipping_cents ?? 0),
-      createdAt: String(order.created_at ?? ""),
-      shippingName: order.shipping_name == null ? null : String(order.shipping_name),
-      shippingLine1: order.shipping_line1 == null ? null : String(order.shipping_line1),
-      shippingCity: order.shipping_city == null ? null : String(order.shipping_city),
-      items: items.map((it) => {
-        const item = asJsonRow(it);
-        return {
-          id: String(item.id ?? ""),
-          name: String(item.name ?? ""),
-          size: String(item.size ?? ""),
-          unitCents: Number(item.unit_cents ?? 0),
-          quantity: Number(item.quantity ?? 0),
-        };
-      }),
-    };
+    if (!rows[0]) return null;
+    const [order] = await loadOrders(sql, rows);
+    return order ?? null;
   });
+
+// ── addresses ───────────────────────────────────────────────────────────────
 
 export const listMyAddresses = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
@@ -102,68 +211,114 @@ export const listMyAddresses = createServerFn({ method: "GET" })
     });
   });
 
+type AddressInput = {
+  id?: string;
+  label?: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  region?: string;
+  postalCode?: string;
+  country?: string;
+  isDefault?: boolean;
+};
+
 export const saveAddress = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator(
-    (input: {
-      id?: string;
-      label?: string;
-      line1: string;
-      line2?: string;
-      city: string;
-      region?: string;
-      postalCode?: string;
-      country?: string;
-      isDefault?: boolean;
-    }) => input,
-  )
+  .validator(requireShape<AddressInput>("Address"))
   .handler(async ({ context, data }) => {
-    const line1 = data.line1.trim();
-    const city = data.city.trim();
-    if (!line1 || !city) throw new Error("Address is incomplete.");
-    const sql = await getSql();
-    const country = (data.country ?? "US").trim().toUpperCase();
-    if (!isShippingCountry(country)) throw new Error("Select a supported shipping country.");
-    if (data.isDefault) {
-      await sql`update addresses set is_default = false where user_id = ${context.userId}`;
-    }
-    if (data.id) {
-      const updated = await sql`
-        update addresses set
-          label = ${data.label ?? "Home"},
-          line1 = ${line1},
-          line2 = ${data.line2 ?? null},
-          city = ${city},
-          region = ${data.region ?? null},
-          postal_code = ${data.postalCode ?? null},
-          country = ${country},
-          is_default = ${Boolean(data.isDefault)}
-        where id = ${data.id} and user_id = ${context.userId}
-        returning id
+    const line1 = str(data.line1, 160);
+    const city = str(data.city, 80);
+    const line2 = optionalStr(data.line2, 160);
+    const region = optionalStr(data.region, 80);
+    const postalCode = optionalStr(data.postalCode, 24);
+    const label = optionalStr(data.label, 40) ?? "Home";
+    const id = optionalStr(data.id, 64);
+    const country = (str(data.country, 2) || "US").toUpperCase();
+    const isDefault = Boolean(data.isDefault);
+
+    if (!line1 || !city) throw new InputError("Address is incomplete.");
+    if (!isShippingCountry(country)) throw new InputError("Select a supported shipping country.");
+
+    return withTransaction(async (sql) => {
+      if (id) {
+        // Ownership is proven before anything is mutated. An address that does
+        // not belong to the caller is indistinguishable from one that does not
+        // exist, so the id space cannot be probed.
+        const owned = await sql`
+          select id from addresses where id = ${id} and user_id = ${context.userId} limit 1
+        `;
+        if (!owned[0]) throw fail("Address not found.", 404);
+
+        if (isDefault) {
+          await sql`
+            update addresses set is_default = false
+            where user_id = ${context.userId} and id <> ${id}
+          `;
+        }
+        await sql`
+          update addresses set
+            label = ${label},
+            line1 = ${line1},
+            line2 = ${line2},
+            city = ${city},
+            region = ${region},
+            postal_code = ${postalCode},
+            country = ${country},
+            is_default = ${isDefault}
+          where id = ${id} and user_id = ${context.userId}
+        `;
+        return { id };
+      }
+
+      const newId = uid("adr");
+      if (isDefault) {
+        await sql`update addresses set is_default = false where user_id = ${context.userId}`;
+      }
+      await sql`
+        insert into addresses (id, user_id, label, line1, line2, city, region, postal_code, country, is_default)
+        values (
+          ${newId}, ${context.userId}, ${label}, ${line1}, ${line2},
+          ${city}, ${region}, ${postalCode}, ${country}, ${isDefault}
+        )
       `;
-      if (!updated[0]) throw new Error("Address not found.");
-      return { id: String(asJsonRow(updated[0]).id ?? data.id) };
-    }
-    const id = uid("adr");
-    await sql`
-      insert into addresses (id, user_id, label, line1, line2, city, region, postal_code, country, is_default)
-      values (
-        ${id}, ${context.userId}, ${data.label ?? "Home"}, ${line1}, ${data.line2 ?? null},
-        ${city}, ${data.region ?? null}, ${data.postalCode ?? null}, ${country},
-        ${Boolean(data.isDefault)}
-      )
-    `;
-    return { id };
+      return { id: newId };
+    });
   });
 
 export const deleteAddress = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((id: string) => id)
+  .validator((id: string) => str(id, 64))
   .handler(async ({ context, data: id }) => {
+    if (!id) throw new InputError("Address is required.");
     const sql = await getSql();
-    await sql`delete from addresses where id = ${id} and user_id = ${context.userId}`;
+    const deleted = await sql`
+      delete from addresses where id = ${id} and user_id = ${context.userId} returning id
+    `;
+    if (!deleted[0]) throw fail("Address not found.", 404);
     return { ok: true };
   });
+
+export const setDefaultAddress = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((id: string) => str(id, 64))
+  .handler(async ({ context, data: id }) => {
+    if (!id) throw new InputError("Address is required.");
+    return withTransaction(async (sql) => {
+      const owned = await sql`
+        select id from addresses where id = ${id} and user_id = ${context.userId} limit 1
+      `;
+      if (!owned[0]) throw fail("Address not found.", 404);
+      await sql`update addresses set is_default = false where user_id = ${context.userId}`;
+      await sql`
+        update addresses set is_default = true
+        where id = ${id} and user_id = ${context.userId}
+      `;
+      return { ok: true };
+    });
+  });
+
+// ── wishlist ────────────────────────────────────────────────────────────────
 
 export const listWishlist = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
@@ -175,7 +330,7 @@ export const listWishlist = createServerFn({ method: "GET" })
       from wishlist_items w
       join products p on p.id = w.product_id
       left join media m on m.id = p.primary_media_id
-      where w.user_id = ${context.userId}
+      where w.user_id = ${context.userId} and p.status = 'published'
       order by w.created_at desc
     `;
     return rows.map((row) => {
@@ -192,91 +347,101 @@ export const listWishlist = createServerFn({ method: "GET" })
 
 export const toggleWishlist = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((productId: string) => productId)
+  .validator((productId: string) => str(productId, 64))
   .handler(async ({ context, data: productId }) => {
-    const sql = await getSql();
-    const existing = await sql<{ product_id: string }>`
-      select product_id from wishlist_items
-      where user_id = ${context.userId} and product_id = ${productId}
-    `;
-    if (existing.length) {
-      await sql`delete from wishlist_items where user_id = ${context.userId} and product_id = ${productId}`;
-      return { saved: false };
-    }
-    await sql`
-      insert into wishlist_items (user_id, product_id) values (${context.userId}, ${productId})
-    `;
-    return { saved: true };
+    if (!productId) throw new InputError("Product is required.");
+    // The toggle is a read-then-write, so it runs in a transaction: two rapid
+    // taps must not both observe "not saved" and insert, nor both observe
+    // "saved" and delete a row they did not create.
+    return withTransaction(async (sql) => {
+      const exists = await sql`
+        select id from products where id = ${productId} and status = 'published' limit 1
+      `;
+      if (!exists[0]) throw fail("Product not found.", 404);
+
+      const removed = await sql`
+        delete from wishlist_items
+        where user_id = ${context.userId} and product_id = ${productId}
+        returning product_id
+      `;
+      if (removed[0]) return { saved: false };
+
+      await sql`
+        insert into wishlist_items (user_id, product_id)
+        values (${context.userId}, ${productId})
+        on conflict (user_id, product_id) do nothing
+      `;
+      return { saved: true };
+    });
   });
 
-type CheckoutItem = {
-  variantId: string;
-  quantity: number;
-};
+// ── order confirmation ──────────────────────────────────────────────────────
 
+/**
+ * Guest-safe order lookup by confirmation token.
+ *
+ * The token is a v4 UUID issued at checkout and stored uniquely, so an order is
+ * only reachable by whoever holds the link the studio handed them — a
+ * sequential or guessable order id never exposes another visitor's purchase.
+ * The response deliberately omits nothing the buyer already knows (their own
+ * address and email) but is never used for a signed-in lookup path.
+ */
 export const getOrderByToken = createServerFn({ method: "GET" })
-  .validator((token: string) => token)
+  .validator((token: string) => str(token, 64))
   .handler(async ({ data: token }) => {
-    if (!token || token.length < 16) return null;
+    // 16 hex characters is the floor of the generated v4 UUID format.
+    if (!/^[0-9a-fA-F-]{16,64}$/.test(token)) return null;
     await ensureSeed();
     const sql = await getSql();
-    const orders = await sql`
+    const rows = await sql`
       select * from orders where confirm_token = ${token} limit 1
     `;
-    const o = orders[0];
-    if (!o) return null;
-    const order = asJsonRow(o);
-    const items = await sql`
-      select * from order_items where order_id = ${String(order.id)}
-    `;
-    return {
-      id: String(order.id ?? ""),
-      status: String(order.status ?? ""),
-      email: order.email == null ? null : String(order.email),
-      totalCents: Number(order.total_cents ?? 0),
-      shippingCents: Number(order.shipping_cents ?? 0),
-      createdAt: String(order.created_at ?? ""),
-      shippingName: order.shipping_name == null ? null : String(order.shipping_name),
-      shippingLine1: order.shipping_line1 == null ? null : String(order.shipping_line1),
-      shippingCity: order.shipping_city == null ? null : String(order.shipping_city),
-      items: items.map((it) => {
-        const item = asJsonRow(it);
-        return {
-          id: String(item.id ?? ""),
-          name: String(item.name ?? ""),
-          size: String(item.size ?? ""),
-          unitCents: Number(item.unit_cents ?? 0),
-          quantity: Number(item.quantity ?? 0),
-        };
-      }),
-    };
+    if (!rows[0]) return null;
+    const [order] = await loadOrders(sql, rows);
+    return order ?? null;
   });
 
+type CheckoutItem = { variantId: string; quantity: unknown };
+
+type CheckoutInput = {
+  email: string;
+  items: CheckoutItem[];
+  shippingName: string;
+  shippingLine1: string;
+  shippingCity: string;
+  shippingRegion?: string;
+  shippingPostal?: string;
+  shippingCountry?: string;
+  idempotencyKey?: string;
+};
+
 export const placeOrder = createServerFn({ method: "POST" })
-  .validator(
-    (input: {
-      email: string;
-      items: CheckoutItem[];
-      shippingName: string;
-      shippingLine1: string;
-      shippingCity: string;
-      shippingRegion?: string;
-      shippingPostal?: string;
-      shippingCountry?: string;
-      idempotencyKey?: string;
-    }) => input,
-  )
+  .validator((input: CheckoutInput) => {
+    if (!input || typeof input !== "object") throw new InputError("Checkout payload is required.");
+    if (!Array.isArray(input.items) || input.items.length === 0) {
+      throw new InputError("Bag is empty.");
+    }
+    if (input.items.length > 24) throw new InputError("Too many lines for one order.");
+    return input;
+  })
   .handler(async ({ data }) => {
     await ensureSeed();
-    const email = data.email.trim().toLowerCase();
-    if (!isValidEmail(email)) throw new Error("Enter a valid email.");
-    if (!data.items.length) throw new Error("Bag is empty.");
-    if (!data.shippingName.trim() || !data.shippingLine1.trim() || !data.shippingCity.trim()) {
-      throw new Error("Shipping address is incomplete.");
+
+    const email = str(data.email, 180).toLowerCase();
+    if (!isValidEmail(email)) throw new InputError("Enter a valid email.");
+
+    const shippingName = str(data.shippingName, 120);
+    const shippingLine1 = str(data.shippingLine1, 160);
+    const shippingCity = str(data.shippingCity, 80);
+    const shippingRegion = optionalStr(data.shippingRegion, 80);
+    const shippingPostal = optionalStr(data.shippingPostal, 24);
+    if (!shippingName || !shippingLine1 || !shippingCity) {
+      throw new InputError("Shipping address is incomplete.");
     }
-    const country = (data.shippingCountry ?? "US").trim().toUpperCase();
-    if (!isShippingCountry(country)) throw new Error("Select a supported shipping country.");
-    const idempotencyKey = data.idempotencyKey?.trim() || null;
+    const countryInput = str(data.shippingCountry, 2).toUpperCase();
+    if (!isShippingCountry(countryInput)) throw new InputError("Select a supported shipping country.");
+
+    const idempotencyKey = optionalStr(data.idempotencyKey, 80);
 
     let userId: string | null = null;
     try {
@@ -286,12 +451,17 @@ export const placeOrder = createServerFn({ method: "POST" })
     } catch {
       userId = null;
     }
+    // Scope keys to the actor. A key generated on another machine can never
+    // resolve to somebody else's order.
+    const idempotencyScope = userId ? `user:${userId}` : `guest:${email}`;
 
     return withTransaction(async (sql) => {
       if (idempotencyKey) {
         const existing = await sql`
           select id, confirm_token, total_cents, shipping_cents
-          from orders where idempotency_key = ${idempotencyKey} limit 1
+          from orders
+          where idempotency_key = ${idempotencyKey} and idempotency_scope = ${idempotencyScope}
+          limit 1
         `;
         if (existing[0]) {
           const row = asJsonRow(existing[0]);
@@ -304,53 +474,77 @@ export const placeOrder = createServerFn({ method: "POST" })
         }
       }
 
-      const lines: Array<{
+      // Collapse duplicate variants in the payload so one cart line cannot be
+      // split across two rows that each pass their own stock check.
+      const wanted = new Map<string, number>();
+      for (const item of data.items) {
+        const variantId = str(item?.variantId, 64);
+        if (!variantId) throw new InputError("A bag line is missing its size.");
+        const qty = clampQty(item?.quantity);
+        if (qty < 1) throw new InputError("Invalid quantity.");
+        wanted.set(variantId, Math.min(8, (wanted.get(variantId) ?? 0) + qty));
+      }
+
+      type Line = {
         variantId: string;
         productId: string;
         name: string;
         size: string;
         unit: number;
         quantity: number;
-      }> = [];
+      };
+      const lines: Line[] = [];
 
-      for (const item of data.items) {
-        const qty = clampQty(item.quantity);
-        if (qty < 1) throw new Error("Invalid quantity.");
+      for (const [variantId, quantity] of wanted) {
         const rows = await sql`
           select v.id, v.product_id, v.size, v.inventory_quantity, v.price_override_cents,
                  p.name, p.price_cents
           from product_variants v
           join products p on p.id = v.product_id
-          where v.id = ${item.variantId} and v.status = 'active' and p.status = 'published'
+          where v.id = ${variantId}
+            and v.status = 'active'
+            and p.status = 'published'
           limit 1
         `;
         const v = rows[0];
-        if (!v) throw new Error("A selected size is no longer available.");
+        if (!v) throw new ConflictError("A selected size is no longer available.");
         const row = asJsonRow(v);
-        const unit = row.price_override_cents == null ? Number(row.price_cents ?? 0) : Number(row.price_override_cents);
+        // Server-authoritative pricing: never the client's number.
+        const unit =
+          row.price_override_cents == null
+            ? Number(row.price_cents ?? 0)
+            : Number(row.price_override_cents);
         lines.push({
           variantId: String(row.id ?? ""),
           productId: String(row.product_id ?? ""),
           name: String(row.name ?? ""),
           size: String(row.size ?? ""),
           unit,
-          quantity: qty,
+          quantity,
         });
       }
 
+      // Reserve stock first. `inventory_quantity >= n` in the WHERE clause makes
+      // the decrement conditional, and `returning` proves it applied — a row
+      // that another checkout already drained simply does not come back, and
+      // the whole transaction rolls back.
       for (const line of lines) {
         const taken = await sql`
           update product_variants
           set inventory_quantity = inventory_quantity - ${line.quantity}
           where id = ${line.variantId} and inventory_quantity >= ${line.quantity}
-          returning id
+          returning inventory_quantity
         `;
         if (!taken[0]) {
-          throw new Error(`${line.name} / ${line.size} does not have enough inventory.`);
+          throw new ConflictError(
+            `${line.name} / ${line.size} does not have enough inventory.`,
+          );
         }
       }
 
       const subtotal = lines.reduce((n, l) => n + l.unit * l.quantity, 0);
+      // Recomputed here, from the server's own subtotal, in the same
+      // transaction — the client's preview is never the charged amount.
       const shipping = shippingCents(subtotal);
       const total = subtotal + shipping;
       const orderId = uid("ord");
@@ -360,22 +554,25 @@ export const placeOrder = createServerFn({ method: "POST" })
         insert into orders (
           id, user_id, status, email, total_cents, shipping_cents,
           shipping_name, shipping_line1, shipping_city, shipping_region,
-          shipping_postal, shipping_country, confirm_token, idempotency_key
+          shipping_postal, shipping_country, confirm_token, idempotency_key,
+          idempotency_scope
         ) values (
           ${orderId}, ${userId}, 'placed', ${email}, ${total}, ${shipping},
-          ${data.shippingName}, ${data.shippingLine1}, ${data.shippingCity},
-          ${data.shippingRegion ?? null}, ${data.shippingPostal ?? null},
-          ${country}, ${confirmToken}, ${idempotencyKey}
+          ${shippingName}, ${shippingLine1}, ${shippingCity},
+          ${shippingRegion}, ${shippingPostal}, ${countryInput},
+          ${confirmToken}, ${idempotencyKey}, ${idempotencyKey ? idempotencyScope : null}
         )
       `;
 
       for (const line of lines) {
         await sql`
           insert into order_items (id, order_id, product_id, variant_id, name, size, unit_cents, quantity)
-          values (${uid("itm")}, ${orderId}, ${line.productId}, ${line.variantId}, ${line.name}, ${line.size}, ${line.unit}, ${line.quantity})
+          values (${uid("itm")}, ${orderId}, ${line.productId}, ${line.variantId},
+                  ${line.name}, ${line.size}, ${line.unit}, ${line.quantity})
         `;
       }
 
+      // Only cleared after the order is fully written.
       if (userId) {
         await sql`delete from cart_items where user_id = ${userId}`;
       }
@@ -383,3 +580,6 @@ export const placeOrder = createServerFn({ method: "POST" })
       return { orderId, confirmToken, totalCents: total, shippingCents: shipping };
     });
   });
+
+/** Exported for the checkout preview and tests: the same table the server uses. */
+export type { ShippingCountry };

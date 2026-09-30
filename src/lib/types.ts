@@ -1,3 +1,6 @@
+import { validateSectionContent } from "@/lib/section-schema";
+import type { StockAvailability } from "@/lib/commerce-rules";
+
 export type JsonScalar = string | number | boolean | null;
 export type JsonRow = Record<string, JsonScalar>;
 
@@ -34,6 +37,8 @@ export type LayerItem = {
   id: string;
   title: string;
   body: string;
+  /** Transparent layer plate for the exploded stack, when authored. */
+  asset?: string;
 };
 
 export type SectionContent = {
@@ -44,14 +49,96 @@ export type SectionContent = {
   ticker?: string;
   established?: string;
   establishedNote?: string;
+  shippingLabel?: string;
+  shippingDetail?: string;
+  ctaLabel?: string;
+  heading?: string;
+  body?: string;
   specs?: SpecItem[];
   layers?: LayerItem[];
+  productSlugs?: string[];
 };
+
+/**
+ * Read-path parse of `homepage_sections.content`.
+ *
+ * Validated against the section's own schema (see `@/lib/section-schema`) so a
+ * row written by hand in SQL, or left behind by an older schema, degrades to
+ * the renderer's defaults instead of crashing the homepage. The write path uses
+ * the throwing `serializeSectionContent()` — invalid content never gets in;
+ * this only makes sure bad content that is already in cannot take the stage
+ * down.
+ */
+export function parseSectionContent(
+  raw: string | null | undefined,
+  sectionKey?: string,
+): SectionContent {
+  if (!raw) return {};
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return {};
+  }
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+  if (!sectionKey || !(sectionKey in SECTION_SCHEMA_KEYS)) {
+    return pickKnownFields(parsed as Record<string, unknown>);
+  }
+  const result = validateSectionContent(sectionKey, parsed);
+  if (!result.ok) {
+    if (typeof console !== "undefined") {
+      console.warn(`[cour] invalid ${sectionKey} section content: ${result.error}`);
+    }
+    return pickKnownFields(parsed as Record<string, unknown>);
+  }
+  return pickKnownFields(result.data);
+}
+
+const SECTION_SCHEMA_KEYS: Record<string, true> = {
+  hero: true,
+  details: true,
+  collections: true,
+  construction: true,
+  know: true,
+};
+
+const STRING_FIELDS = [
+  "leftTitle",
+  "leftBody",
+  "rightTitle",
+  "rightBody",
+  "ticker",
+  "established",
+  "establishedNote",
+  "shippingLabel",
+  "shippingDetail",
+  "ctaLabel",
+  "heading",
+  "body",
+] as const;
+
+/** Narrow an already-validated bag of values to the fields the stage reads. */
+function pickKnownFields(source: Record<string, unknown>): SectionContent {
+  const content: SectionContent = {};
+  for (const key of STRING_FIELDS) {
+    const value = source[key];
+    if (typeof value === "string" && value.length) content[key] = value;
+  }
+  if (Array.isArray(source.specs)) content.specs = asTextList(source.specs);
+  if (Array.isArray(source.layers)) content.layers = asLayerList(source.layers);
+  if (Array.isArray(source.productSlugs)) {
+    content.productSlugs = source.productSlugs.filter((s): s is string => typeof s === "string");
+  }
+  return content;
+}
 
 function asTextList(value: unknown): SpecItem[] {
   if (!Array.isArray(value)) return [];
   return value.map((item, index) => {
-    const rec = item && typeof item === "object" ? (item as { id?: unknown; title?: unknown; body?: unknown }) : {};
+    const rec =
+      item && typeof item === "object"
+        ? (item as { id?: unknown; title?: unknown; body?: unknown })
+        : {};
     return {
       id: String(rec.id ?? String(index + 1).padStart(2, "0")),
       title: String(rec.title ?? ""),
@@ -60,34 +147,21 @@ function asTextList(value: unknown): SpecItem[] {
   });
 }
 
-export function parseSectionContent(raw: string | null | undefined): SectionContent {
-  if (!raw) return {};
-  try {
-    const parsed = JSON.parse(raw) as {
-      leftTitle?: unknown;
-      leftBody?: unknown;
-      rightTitle?: unknown;
-      rightBody?: unknown;
-      ticker?: unknown;
-      established?: unknown;
-      establishedNote?: unknown;
-      specs?: unknown;
-      layers?: unknown;
+function asLayerList(value: unknown): LayerItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((item, index) => {
+    const rec =
+      item && typeof item === "object"
+        ? (item as { id?: unknown; title?: unknown; body?: unknown; asset?: unknown })
+        : {};
+    const layer: LayerItem = {
+      id: String(rec.id ?? String(index + 1).padStart(2, "0")),
+      title: String(rec.title ?? ""),
+      body: String(rec.body ?? ""),
     };
-    const content: SectionContent = {};
-    if (typeof parsed.leftTitle === "string") content.leftTitle = parsed.leftTitle;
-    if (typeof parsed.leftBody === "string") content.leftBody = parsed.leftBody;
-    if (typeof parsed.rightTitle === "string") content.rightTitle = parsed.rightTitle;
-    if (typeof parsed.rightBody === "string") content.rightBody = parsed.rightBody;
-    if (typeof parsed.ticker === "string") content.ticker = parsed.ticker;
-    if (typeof parsed.established === "string") content.established = parsed.established;
-    if (typeof parsed.establishedNote === "string") content.establishedNote = parsed.establishedNote;
-    if (Array.isArray(parsed.specs)) content.specs = asTextList(parsed.specs);
-    if (Array.isArray(parsed.layers)) content.layers = asTextList(parsed.layers);
-    return content;
-  } catch {
-    return {};
-  }
+    if (typeof rec.asset === "string") layer.asset = rec.asset;
+    return layer;
+  });
 }
 
 export type HomeSection = {
@@ -128,6 +202,11 @@ export type ProductCard = {
   care: string | null;
   seoTitle: string | null;
   seoDescription: string | null;
+  /**
+   * Semantic stock state across the product's active variants. Never the exact
+   * unit count — that is operator data and is only returned by the studio API.
+   */
+  availability: StockAvailability;
 };
 
 export type Variant = {

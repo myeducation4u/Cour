@@ -1,5 +1,22 @@
-export const SHIPPING_THRESHOLD_CENTS = 40000;
-export const SHIPPING_FLAT_CENTS = 1800;
+/**
+ * The one place shipping economics are defined. The server recomputes the
+ * charge from this table inside the order transaction; the client may only
+ * preview it. Changing a number here changes both sides at once, which is the
+ * point — they used to be able to drift.
+ */
+export const SHIPPING = {
+  /** Orders at or above this subtotal ship free. */
+  freeThresholdCents: 40000,
+  /** Flat charge below the threshold, in cents. */
+  flatCents: 1800,
+  /** Fallback destination when a form has no country selected yet. */
+  defaultCountry: "US",
+  /** Where the studio ships from, shown in the checkout summary. */
+  origin: "STUDIO",
+  /** Human copy for the free-shipping state. */
+  coveredLabel: "STUDIO COVERED",
+} as const;
+
 export const MAX_LINE_QTY = 8;
 export const MAX_INVENTORY = 9999;
 
@@ -46,9 +63,31 @@ export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
 export const SHIPPING_COUNTRIES = ["US", "CA", "GB", "DE", "FR", "NL", "AU", "JP"] as const;
 export type ShippingCountry = (typeof SHIPPING_COUNTRIES)[number];
 
+/** Display names, so the checkout form and the server agree on one list. */
+export const SHIPPING_COUNTRY_LABELS: Record<ShippingCountry, string> = {
+  US: "UNITED STATES",
+  CA: "CANADA",
+  GB: "UNITED KINGDOM",
+  DE: "GERMANY",
+  FR: "FRANCE",
+  NL: "NETHERLANDS",
+  AU: "AUSTRALIA",
+  JP: "JAPAN",
+};
+
+/** Countries as `{ value, label }` rows for selects and address forms. */
+export const SHIPPING_COUNTRY_OPTIONS = SHIPPING_COUNTRIES.map((value) => ({
+  value,
+  label: SHIPPING_COUNTRY_LABELS[value],
+}));
+
 export function isShippingCountry(value: string): value is ShippingCountry {
   return (SHIPPING_COUNTRIES as readonly string[]).includes(value);
 }
+
+/** Where a navigation item may live. */
+export const NAV_LOCATIONS = ["header", "footer"] as const;
+export type NavLocation = (typeof NAV_LOCATIONS)[number];
 
 export function clampQty(n: unknown): number {
   const v = typeof n === "number" ? n : Number(n);
@@ -62,9 +101,10 @@ export function clampInventory(n: unknown): number {
   return Math.max(0, Math.min(MAX_INVENTORY, Math.floor(v)));
 }
 
+/** Shipping charge for a subtotal. 0 for an empty bag, free above the threshold. */
 export function shippingCents(subtotalCents: number): number {
   if (!Number.isFinite(subtotalCents) || subtotalCents <= 0) return 0;
-  return subtotalCents >= SHIPPING_THRESHOLD_CENTS ? 0 : SHIPPING_FLAT_CENTS;
+  return subtotalCents >= SHIPPING.freeThresholdCents ? 0 : SHIPPING.flatCents;
 }
 
 export function stockAvailability(quantity: number): StockAvailability {
